@@ -43,15 +43,15 @@ enum Edge
     UR,
     UL,
     UB,
-    BR,
-    BL,
     DR,
     DL,
     DB,
-    UF,
     FR,
     FL,
-    DF
+    UF,
+    DF,
+    BR,
+    BL
 };
 
 enum Face
@@ -89,24 +89,16 @@ constexpr std::array<std::array<Face, 2>, 12> EDGE_COLORS =
     {Up, Right},
     {Up, Left},
     {Up, Back},
-    {Back, Right},
-    {Back, Left},
     {Down, Right},
     {Down, Left},
     {Down, Back},
-    {Up, Front},
     {Front, Right},
     {Front, Left},
-    {Down, Front}
+    {Up, Front},
+    {Down, Front},
+    {Back, Right},
+    {Back, Left}
 }};
-
-// constexpr std::array<Edge, 4> UDSlice = 
-// {
-//     UF,
-//     FR,
-//     FL,
-//     DF
-// };
 
 constexpr int UD_SLICE = 8;
 
@@ -127,15 +119,16 @@ constexpr std::array<std::array<std::array<int, 2>, 2>, 12> EDGE_POSITIONS =
     {{{2, 1}, {1, 0}}},
     {{{0, 1}, {1, 0}}},
     {{{1, 0}, {1, 0}}},
-    {{{0, 1}, {2, 1}}},
-    {{{2, 1}, {0, 1}}},
+
     {{{2, 1}, {1, 2}}},
     {{{0, 1}, {1, 2}}},
     {{{1, 2}, {1, 2}}},
-    {{{1, 2}, {1, 0}}},
     {{{2, 1}, {0, 1}}},
     {{{0, 1}, {2, 1}}},
-    {{{1, 0}, {1, 2}}}
+    {{{1, 2}, {1, 0}}},
+    {{{1, 0}, {1, 2}}},
+    {{{0, 1}, {2, 1}}},
+    {{{2, 1}, {0, 1}}}
 }};
 
 constexpr std::array<std::array<std::array<int, 2>, 3>, 8> CORNER_POSITIONS =

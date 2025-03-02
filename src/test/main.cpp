@@ -75,7 +75,10 @@ int main()
     std::cout << cube.isSolved() << "\n";
     CoordCube cord = CoordCube(&cube);
     CubieCube cube2 = CubieCube(&cord);
-    std::cout << cube.toUDSliceCoord() << "\n";
+    int coord = cube.toUDSliceCoord();
+    cube = CubieCube();
+    cube.invUDSliceCoord(coord);
     printCube(cube2);
+    printCube(cube);
     return 0;
 }

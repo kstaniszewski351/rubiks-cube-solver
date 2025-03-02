@@ -321,14 +321,19 @@ int CubieCube::toEdgePermCoord()
 int CubieCube::toUDSliceCoord()
 {
     int coord = 0;
-    int count = 1;
-    for(int i = EDGE_COUNT - 1; i >= 0; i--)
+    int k = 3;
+    int n = 11;
+    while(k >= 0)
     {
-        if(edgePerm[i] >= UD_SLICE)
+        if(edgePerm[n] >= UD_SLICE)
         {
-            coord += biCoeff(i, count);
-            count += 1;
+            k -= 1;
         }
+        else
+        {
+            coord += biCoeff(n, k);
+        }
+        n --;
     }
 
     return coord;
@@ -336,27 +341,41 @@ int CubieCube::toUDSliceCoord()
 
 void CubieCube::invUDSliceCoord(int coord)
 {
-    std::array<bool, 12> positions {};
-    int count = 4;
+    std::array<bool, EDGE_COUNT> occupied {};
+    int k = 3;
+    int n = 11;
 
-    for(int i = 0; i < EDGE_COUNT; i++)
+
+    while(k >= 0)
     {
-        if (int j = (coord - biCoeff(i, count)) >= 0)
+        int c = biCoeff(n, k);
+
+        if(coord < c)
         {
-            edgePerm[i] = static_cast<Edge>(12 - count);
-            positions[i] = true;
-            coord -= j;
-            count -= 1;
+            occupied[n] = true;
+            k --;
         }
+        else
+        {
+            coord = coord - c;
+        }
+        n --;
     }
 
-    count = 0;
+    int slice = UD_SLICE;
+    int other = 0;
 
-    int j = 0;
     for(int i = 0; i < EDGE_COUNT; i++)
     {
-        if(positions[i] == true) {continue;}
-
-        
+        if(occupied[i])
+        {
+            edgePerm[i] = static_cast<Edge>(slice);
+            slice ++;
+        }
+        else
+        {
+            edgePerm[i] = static_cast<Edge>(other);
+            other ++;
+        }
     }
 }
