@@ -8,12 +8,12 @@ find_package(GTest REQUIRED)
 
 
 add_library(libcube STATIC
-    src/coord_cube.cpp
-    src/coord_moves.cpp
-    src/cubie_cube.cpp
-    src/util.cpp
+    src/libcube/coord_cube.cpp
+    src/libcube/coord_moves.cpp
+    src/libcube/cubie_cube.cpp
+    src/libcube/util.cpp
 )
-target_include_directories(libcube PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_include_directories(libcube PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/libcube)
 
 
 add_executable(main

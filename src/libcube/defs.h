@@ -80,6 +80,7 @@ constexpr int CORNER_ORI_COUNT = 2187;
 constexpr int EDGE_ORI_COUNT = 2048;
 constexpr int CORNER_PERM_COUNT = 40320;
 constexpr int EDGE_PERM_COUNT = 479001600;
+constexpr int UDSLICE_PERM_COUNT = 495;
 
 constexpr int EDGE_COUNT = 12;
 constexpr int CORNER_COUNT = 8;

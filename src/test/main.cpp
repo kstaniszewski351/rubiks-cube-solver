@@ -43,7 +43,7 @@ int main()
 
     printCube(cube);
     
-    std::cout << cube.toUDSliceCoord() << "\n";
+    //std::cout << cube.toUDSliceCoord() << "\n";
     //cube.reset();
     // while(true)
     // {
@@ -72,13 +72,13 @@ int main()
     CoordMoves* c_moves = new CoordMoves();
     c_moves->GenerateMoves();
 
-    std::cout << cube.isSolved() << "\n";
-    CoordCube cord = CoordCube(&cube);
-    CubieCube cube2 = CubieCube(&cord);
-    int coord = cube.toUDSliceCoord();
-    cube = CubieCube();
-    cube.invUDSliceCoord(coord);
-    printCube(cube2);
-    printCube(cube);
+    // std::cout << cube.isSolved() << "\n";
+    // CoordCube cord = CoordCube(&cube);
+    // CubieCube cube2 = CubieCube(&cord);
+    // int coord = cube.toUDSliceCoord();
+    // cube = CubieCube();
+    // cube.invUDSliceCoord(coord);
+    // printCube(cube2);
+    // printCube(cube);
     return 0;
 }

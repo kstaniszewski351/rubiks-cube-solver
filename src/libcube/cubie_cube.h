@@ -34,6 +34,8 @@ public:
     int toCornerPermCoord();
     int toEdgePermCoord();
     int toUDSliceCoord();
+    void multiplyCorners(CubieCube& b);
+    void multiplyEdges(CubieCube& b);
 private:
     void updateCorner(Corner c, int amount);
 };

@@ -13,4 +13,5 @@ public:
     std::array<moveArray, CORNER_ORI_COUNT> cornerOriMoves {};
     std::array<moveArray,  EDGE_ORI_COUNT> edgeOriMoves {};
     std::array<moveArray, CORNER_PERM_COUNT> cornerPermMoves {};
+    std::array<moveArray, UDSLICE_PERM_COUNT> udSliceMoves {};
 };

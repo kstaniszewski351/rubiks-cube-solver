@@ -34,5 +34,13 @@ void CoordMoves::GenerateMoves()
             cornerPermMoves[j][i] = c.toCornerPermCoord();
             c.reset();
         }
+        for(int j = 0; j < UDSLICE_PERM_COUNT; j++)
+        {
+            c.invUDSliceCoord(j);
+            c.move(static_cast<Move>(i));
+            udSliceMoves[j][i] = c.toUDSliceCoord();
+            c.reset();
+        }
+
     }
 }

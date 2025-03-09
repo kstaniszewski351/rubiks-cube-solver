@@ -379,3 +379,23 @@ void CubieCube::invUDSliceCoord(int coord)
         }
     }
 }
+
+void CubieCube::multiplyEdges(CubieCube& cube)
+{
+    for(int i = 0; i < EDGE_COUNT; i++)
+    {
+        edgePerm[i] = static_cast<Edge>((edgePerm[i] + cube.edgePerm[i]) % EDGE_COUNT);
+
+        edgeOri[i] = (edgeOri[i] + cube.edgeOri[i]) % 2;
+    }
+}
+
+void CubieCube::multiplyCorners(CubieCube& cube)
+{
+    for(int i = 0; i < CORNER_COUNT; i++)
+    {
+        cornerPerm[i] = static_cast<Corner>((cornerPerm[i] = cube.cornerPerm[i]) % CORNER_COUNT);
+
+        cornerOri[i] = (cornerOri[i] + cube.cornerOri[i] % 3);
+    }
+}
