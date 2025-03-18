@@ -3,6 +3,7 @@
 #include <array>
 #include <map>
 #include <string>
+#include <unordered_set>
 
 enum Move
 {
@@ -29,13 +30,13 @@ enum Move
 enum Corner
 {
     URF,
-    ULF,
-    URB,
+    UFL,
+    UBR,
     ULB,
-    DRF,
+    DFR,
     DLF,
     DRB,
-    DLB
+    DBL
 };
 
 enum Edge
@@ -64,18 +65,6 @@ enum Face
     Back
 };
 
-struct CornerCubie
-{
-    Corner index;
-    int orientation;
-};
-
-struct EdgeCubie
-{
-    Edge index;
-    int orientation;
-};
-
 constexpr int CORNER_ORI_COUNT = 2187;
 constexpr int EDGE_ORI_COUNT = 2048;
 constexpr int CORNER_PERM_COUNT = 40320;
@@ -84,8 +73,13 @@ constexpr int UDSLICE_PERM_COUNT = 495;
 
 constexpr int EDGE_COUNT = 12;
 constexpr int CORNER_COUNT = 8;
+constexpr int FACE_COUNT = 6;
+constexpr int FACELET_COUNT = 8;
 
-constexpr std::array<std::array<Face, 2>, 12> EDGE_COLORS =
+constexpr int CENTER = 4;
+constexpr int UD_SLICE = 8;
+
+constexpr std::array<std::array<Face, 2>, EDGE_COUNT> EDGE_COLORS =
 {{
     {Up, Right},
     {Up, Left},
@@ -101,57 +95,55 @@ constexpr std::array<std::array<Face, 2>, 12> EDGE_COLORS =
     {Back, Left}
 }};
 
-constexpr int UD_SLICE = 8;
-
-constexpr std::array<std::array<Face, 3>, 8> CORNER_COLORS =
+const std::array<std::array<Face, 3>, CORNER_COUNT> CORNER_COLORS =
 {{
-    {Up, Right, Front},
-    {Up, Front, Left},
-    {Up, Back, Right},
-    {Up, Left, Back},
-    {Down, Front, Right},
-    {Down, Left, Front},
-    {Down, Right, Back},
-    {Down, Back, Left}
+    {{Up, Right, Front}},
+    {{Up, Front, Left}},
+    {{Up, Back, Right}},
+    {{Up, Left, Back}},
+    {{Down, Front, Right}},
+    {{Down, Left, Front}},
+    {{Down, Right, Back}},
+    {{Down, Back, Left}}
 }};
 
-constexpr std::array<std::array<std::array<int, 2>, 2>, 12> EDGE_POSITIONS =
+constexpr std::array<std::array<int, 2>, EDGE_COUNT> EDGE_POSITIONS = 
 {{
-    {{{2, 1}, {1, 0}}},
-    {{{0, 1}, {1, 0}}},
-    {{{1, 0}, {1, 0}}},
-
-    {{{2, 1}, {1, 2}}},
-    {{{0, 1}, {1, 2}}},
-    {{{1, 2}, {1, 2}}},
-    {{{2, 1}, {0, 1}}},
-    {{{0, 1}, {2, 1}}},
-    {{{1, 2}, {1, 0}}},
-    {{{1, 0}, {1, 2}}},
-    {{{0, 1}, {2, 1}}},
-    {{{2, 1}, {0, 1}}}
+    {{1, 6}},
+    {{6, 1}},
+    {{3, 4}},
+    {{1, 1}},
+    {{6, 6}},
+    {{4, 3}},
+    {{1, 4}},
+    {{6, 4}},
+    {{4, 3}},
+    {{3, 4}},
+    {{1, 3}},
+    {{6, 3}},
 }};
 
-constexpr std::array<std::array<std::array<int, 2>, 3>, 8> CORNER_POSITIONS =
+//the indexes need to be arranged in clockwise order starting from U or D face
+constexpr std::array<std::array<int, 3>, CORNER_COUNT> CORNER_POSITIONS =
 {{
-    {{{2, 2}, {0, 0}, {2, 0}}},
-    {{{0, 2}, {0, 0}, {2, 0}}},
-    {{{2, 0}, {0, 0}, {2, 0}}},
-    {{{0, 0}, {0, 0}, {2, 0}}},
-    {{{2, 0}, {2, 2}, {0, 2}}},
-    {{{0, 0}, {2, 2}, {0, 2}}},
-    {{{2, 2}, {2, 2}, {0, 2}}},
-    {{{0, 2}, {2, 2}, {0, 2}}}
+    {{2, 7, 0}},
+    {{7, 5, 2}},
+    {{0, 2, 5}},
+    {{5, 0, 7}},
+    {{0, 2, 2}},
+    {{5, 7, 7}},
+    {{2, 0, 0}},
+    {{7, 5, 5}}
 }};
 
 constexpr std::array<std::array<Corner, 4>, 6> FACE_CORNERS =
 {{
-    {ULB, URB, URF, ULF},
-    {DLF, DRF, DRB, DLB},
-    {URF, URB, DRB, DRF},
-    {ULB, ULF, DLF, DLB},
-    {ULF, URF, DRF, DLF},
-    {URB, ULB, DLB, DRB},
+    {ULB, UBR, URF, UFL},
+    {DLF, DFR, DRB, DBL},
+    {URF, UBR, DRB, DFR},
+    {ULB, UFL, DLF, DBL},
+    {UFL, URF, DFR, DLF},
+    {UBR, ULB, DBL, DRB},
 }};
 
 constexpr std::array<std::array<Edge, 4>, 6> FACE_EDGES =
@@ -185,3 +177,25 @@ const std::map<std::string, Move> MOVE_NAMES =
     {"B2", B2},
     {"B3", B3},
 };
+
+constexpr std::array<char, FACE_COUNT> FACE_NAMES
+{
+    'W',
+    'Y',
+    'R',
+    'O',
+    'G',
+    'B'
+};
+
+constexpr std::array<int, FACE_COUNT> FACE_STRING_INDEX
+{
+    42,
+    48,
+    3,
+    81,
+    45,
+    39
+};
+
+constexpr CubieCube S_U4;

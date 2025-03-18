@@ -1,5 +1,6 @@
 #include "cubie_cube.h"
 #include "coord_cube.h"
+#include "face_cube.h"
 #include "defs.h"
 #include "util.h"
 #include <vector>
@@ -12,12 +13,73 @@ CubieCube::CubieCube()
     reset();
 }
 
-CubieCube::CubieCube(CoordCube* c)
+CubieCube::CubieCube(const CoordCube& c)
 {
-    invEdgePermCoord(c->edgePermCoord);
-    invCornerPermCoord(c->cornerPermCoord);
-    invEdgeOriCoord(c->edgeOriCoord);
-    invCornerOriCoord(c->cornerOriCoord);
+    invEdgePermCoord(c.edgePermCoord);
+    invCornerPermCoord(c.cornerPermCoord);
+    invEdgeOriCoord(c.edgeOriCoord);
+    invCornerOriCoord(c.cornerOriCoord);
+}
+
+CubieCube::CubieCube(const FaceCube& c)
+{
+    for(int i = 0; i < CORNER_COUNT; i++)
+    {
+        std::array<Face, 3> colors;
+
+        for(int j = 0; j < 3; j++)
+        {
+            colors[j] = c.facelets[CORNER_COLORS[i][j]][CORNER_POSITIONS[i][j]];
+        }
+
+        int r;
+        int j;
+
+        for(r = 0; r < 3; r++)
+        {
+            for(j = 0; j < CORNER_COUNT; j++)
+            {
+                if(std::ranges::equal(CORNER_COLORS[j], colors)) {break; }
+            }
+
+            if(j != CORNER_COUNT) {break; }
+
+            std::ranges::rotate(colors, colors.end() - 1);
+        }
+
+        cornerPerm[i] = static_cast<Corner>(j);
+        cornerOri[i] = r;
+
+    }
+
+    for(int i = 0; i < EDGE_COUNT; i++)
+    {
+        std::array<Face, 2> colors;
+
+        for(int j = 0; j < 2; j++)
+        {
+            colors[j] = c.facelets[EDGE_COLORS[i][j]][EDGE_POSITIONS[i][j]];
+        }
+
+        int r;
+        int j;
+
+        for(r = 0; r < 2; r++)
+        {
+            for(j = 0; j < EDGE_COUNT; j++)
+            {
+                if(std::ranges::equal(EDGE_COLORS[j], colors)) {break; }
+            }
+
+            if(j != EDGE_COUNT) {break; }
+
+            std::ranges::rotate(colors, colors.end() - 1);
+        }
+
+        edgePerm[i] = static_cast<Edge>(j);
+        edgeOri[i] = r;
+
+    }
 }
 
 void CubieCube::reset()
@@ -55,42 +117,6 @@ bool CubieCube::isSolved()
     return true;
 }
 
-FaceCube CubieCube::toFaceCube()
-{
-    FaceCube cube{};
-
-    cube[Up][1][1] = Up;
-    cube[Down][1][1] = Down;
-    cube[Right][1][1] = Right;
-    cube[Left][1][1] = Left;
-    cube[Front][1][1] = Front;
-    cube[Back][1][1] = Back;
-
-    for (int i = 0; i < CORNER_COUNT; i++)
-    {
-
-        for (int p = 0; p < 3; p++)
-        {
-            int r = (p + cornerOri[i]) % 3;
-
-            cube[CORNER_COLORS[i][p]][CORNER_POSITIONS[i][p][1]][CORNER_POSITIONS[i][p][0]] = CORNER_COLORS[cornerPerm[i]][r];
-        }
-    }
-
-    for (int i = 0; i < EDGE_COUNT; i++)
-    {
-
-        for (int p = 0; p < 2; p++)
-        {
-            int r = (p + edgeOri[i]) % 2;
-
-            cube[EDGE_COLORS[i][p]][EDGE_POSITIONS[i][p][1]][EDGE_POSITIONS[i][p][0]] = EDGE_COLORS[edgePerm[i]][r];
-        }
-    }
-
-    return cube;
-}
-
 void CubieCube::move(Move m)
 {
     int amount = m % 3 + 1;
@@ -125,14 +151,14 @@ void CubieCube::move(Move m)
     {
         case Right:
             updateCorner(URF, 1);
-            updateCorner(URB, 2);
+            updateCorner(UBR, 2);
             updateCorner(DRB, 1);
-            updateCorner(DRF, 2);
+            updateCorner(DFR, 2);
             break;
         case Left:
-            updateCorner(ULF, 2);
+            updateCorner(UFL, 2);
             updateCorner(ULB, 1);
-            updateCorner(DLB, 2);
+            updateCorner(DBL, 2);
             updateCorner(DLF, 1);
             break;
         case Front:
@@ -141,9 +167,9 @@ void CubieCube::move(Move m)
             edgeOri[FL] = !edgeOri[FL];
             edgeOri[DF]= !edgeOri[DF];
             updateCorner(URF, 2);
-            updateCorner(DRF, 1);
+            updateCorner(DFR, 1);
             updateCorner(DLF, 2);
-            updateCorner(ULF, 1);
+            updateCorner(UFL, 1);
             break;
         case Back:
             edgeOri[UB] = !edgeOri[UB];
@@ -151,9 +177,9 @@ void CubieCube::move(Move m)
             edgeOri[BL] = !edgeOri[BL];
             edgeOri[DB] = !edgeOri[DB];
 
-            updateCorner(URB, 1);
+            updateCorner(UBR, 1);
             updateCorner(DRB, 2);
-            updateCorner(DLB, 1);
+            updateCorner(DBL, 1);
             updateCorner(ULB, 2);
             break;
     }

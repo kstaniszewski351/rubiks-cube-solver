@@ -6,19 +6,18 @@
 #include "defs.h"
 
 class CoordCube;
-
-using FaceCube = std::array<std::array<std::array<Face, 3>, 3>, 6>;
+class FaceCube;
 
 class CubieCube
 {
 public:
     CubieCube();
-    CubieCube(CoordCube* c);
+    CubieCube(const CoordCube& c);
+    CubieCube(const FaceCube& c);
 
     void move(Move m);
     void reset();
     bool isSolved();
-    FaceCube toFaceCube();
 
     std::array<Edge, EDGE_COUNT> edgePerm;
     std::array<Corner, CORNER_COUNT> cornerPerm;

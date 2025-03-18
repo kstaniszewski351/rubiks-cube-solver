@@ -12,6 +12,7 @@ add_library(libcube STATIC
     src/libcube/coord_moves.cpp
     src/libcube/cubie_cube.cpp
     src/libcube/util.cpp
+    src/libcube/face_cube.cpp
 )
 target_include_directories(libcube PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/libcube)
 
