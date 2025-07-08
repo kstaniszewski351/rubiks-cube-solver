@@ -1,29 +1,55 @@
-#include <string>
 #include "face_cube.h"
+#include "cubie_cube.h"
+#include <algorithm>
+#include <unordered_set>
+
+FaceCube::FaceCube()
+{
+    reset();
+};
+
+void FaceCube::reset()
+{
+    for(int i = 0; i < FaceCount; i++)
+    {
+        for(int j = 0; j < FACELET_COUNT; j++)
+        {
+            facelets[i][j] = static_cast<Face>(i);
+        }
+    };
+}
 
 FaceCube::FaceCube(const CubieCube& cube)
 {
-    // for(int i = 0; i < FACE_COUNT; i++)
+    // for(int i = 0; i < FaceCount; i++)
     // {
     //     facelets[i][CENTER] = static_cast<Face>(i);
     // }
 
-    for (int i = 0; i < CORNER_COUNT; i++)
+    for(int i = 0; i < CornerCount; i++)
     {
 
-        for (int p = 0; p < 3; p++)
+        for(int p = 0; p < 3; p++)
         {
-            int r = (p + cube.cornerOri[i]) % 3;
+            int r = 0;
+            if(cube.cornerOri[i] < 3)
+            {
+                r = (p + cube.cornerOri[i]) % 3;
+            }
+            else
+            {
+                r = ((p + cube.cornerOri[i]) % 3 + p) % 3;
+            }
 
             facelets[CORNER_COLORS[i][p]][CORNER_POSITIONS[i][p]] = CORNER_COLORS[cube.cornerPerm[i]][r];
         }
     }
 
 
-    for (int i = 0; i < EDGE_COUNT; i++)
+    for(int i = 0; i < EdgeCount; i++)
     {
 
-        for (int p = 0; p < 2; p++)
+        for(int p = 0; p < 2; p++)
         {
             int r = (p + cube.edgeOri[i]) % 2;
 
@@ -32,41 +58,44 @@ FaceCube::FaceCube(const CubieCube& cube)
     }
 }
 
-std::string FaceCube::toString()
+void FaceCube::move(Move m)
 {
-    constexpr int ROWS = 9;
-    constexpr int COLUMNS = 13;
-    std::string s(COLUMNS * ROWS, ' ');
+    
+}
 
-    for(int i = 1; i <= ROWS; i++)
-    {
-        s.at(i * COLUMNS - 1) = '\n';
-    }
+//checks if cube can be safely converted to CubieCube
+bool FaceCube::isValid()
+{
+    std::array<int, FaceCount> count {};
 
-    for(int f = 0; f < FACE_COUNT; f++)
+    for(int i = 0; i < FaceCount; i++)
     {
-        int si = FACE_STRING_INDEX[f];
-        for(int i = 0; i < 9; i++)
+        for(int j = 0; j < FACELET_COUNT; j++)
         {
-            int x = i % 3;
-            int y = i / 3;
-            
-            Face c;
-            if(i == CENTER)
-            {
-                c = static_cast<Face>(f);
-            }
-            else if( i > CENTER)
-            {
-                c = facelets[f][i - 1];
-            }
-            else
-            {
-                c = facelets[f][i];
-            }
-
-            s.at(si + x + y * COLUMNS) = FACE_NAMES[c];
+            count[facelets[i][j]] ++;
         }
     }
-    return s;
+
+    for(int i : count)
+    {
+        if(i != FACELET_COUNT)
+        {
+            return false;
+        }
+    }
+
+    for(int i = 0; i < CornerCount; i++)
+    {
+        std::unordered_set<Face> colors;
+
+        for(int j = 0; j < 3; j ++)
+        {
+            if(!colors.insert(facelets[CORNER_COLORS[i][j]][CORNER_POSITIONS[i][j]]).second)
+            {
+                return false;
+            };
+        }
+    }
+
+    return true;
 }

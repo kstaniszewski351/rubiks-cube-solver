@@ -1,14 +1,15 @@
 #pragma once
 
-#include <string>
 #include "defs.h"
 #include "cubie_cube.h"
-
 
 class FaceCube
 {
 public:
+    FaceCube();
     FaceCube(const CubieCube& cube);
-    std::array<std::array<Face, FACELET_COUNT>, FACE_COUNT> facelets;
-    std::string toString();
+    void move(Move m);
+    void reset();
+    std::array<std::array<Face, FACELET_COUNT>, FaceCount> facelets;
+    bool isValid();
 };

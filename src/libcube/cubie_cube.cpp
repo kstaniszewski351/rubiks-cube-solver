@@ -2,6 +2,7 @@
 #include "coord_cube.h"
 #include "face_cube.h"
 #include "defs.h"
+#include "assert.h"
 #include "util.h"
 #include <vector>
 #include <algorithm>
@@ -13,6 +14,10 @@ CubieCube::CubieCube()
     reset();
 }
 
+CubieCube::CubieCube(const std::array<Edge, EdgeCount>& ep, const std::array<Corner, CornerCount>& cp, const std::array<bool, EdgeCount>& eo, const std::array<int, CornerCount>& co)
+    :edgePerm(ep), cornerPerm(cp), edgeOri(eo), cornerOri(co)
+{}
+
 CubieCube::CubieCube(const CoordCube& c)
 {
     invEdgePermCoord(c.edgePermCoord);
@@ -23,7 +28,7 @@ CubieCube::CubieCube(const CoordCube& c)
 
 CubieCube::CubieCube(const FaceCube& c)
 {
-    for(int i = 0; i < CORNER_COUNT; i++)
+    for(int i = 0; i < CornerCount; i++)
     {
         std::array<Face, 3> colors;
 
@@ -35,16 +40,27 @@ CubieCube::CubieCube(const FaceCube& c)
         int r;
         int j;
 
-        for(r = 0; r < 3; r++)
+        for(r = 0; r < 6; r++)
         {
-            for(j = 0; j < CORNER_COUNT; j++)
+            for(j = 0; j < CornerCount; j++)
             {
                 if(std::ranges::equal(CORNER_COLORS[j], colors)) {break; }
             }
 
-            if(j != CORNER_COUNT) {break; }
+            if(j != CornerCount) {break; }
 
-            std::ranges::rotate(colors, colors.end() - 1);
+
+            if(r <= 3)
+            {
+                //rotate right
+                std::ranges::rotate(colors, colors.end() - 1);
+            }
+
+            else if(r >= 3)
+            {
+                //rotate left
+                std::ranges::rotate(colors, colors.begin() + 1);
+            }
         }
 
         cornerPerm[i] = static_cast<Corner>(j);
@@ -52,7 +68,7 @@ CubieCube::CubieCube(const FaceCube& c)
 
     }
 
-    for(int i = 0; i < EDGE_COUNT; i++)
+    for(int i = 0; i < EdgeCount; i++)
     {
         std::array<Face, 2> colors;
 
@@ -66,12 +82,12 @@ CubieCube::CubieCube(const FaceCube& c)
 
         for(r = 0; r < 2; r++)
         {
-            for(j = 0; j < EDGE_COUNT; j++)
+            for(j = 0; j < EdgeCount; j++)
             {
                 if(std::ranges::equal(EDGE_COLORS[j], colors)) {break; }
             }
 
-            if(j != EDGE_COUNT) {break; }
+            if(j != EdgeCount) {break; }
 
             std::ranges::rotate(colors, colors.end() - 1);
         }
@@ -82,23 +98,36 @@ CubieCube::CubieCube(const FaceCube& c)
     }
 }
 
+bool CubieCube::operator==(const CubieCube& c)
+{
+    return edgePerm == c.edgePerm && cornerPerm == c.cornerPerm && edgeOri == c.edgeOri && cornerOri == c.cornerOri;
+}
+
+bool CubieCube::operator!=(const CubieCube& c)
+{
+    return !operator==(c);
+}
+
+
 void CubieCube::reset()
 {
-    for (int i = 0; i < CORNER_COUNT; i++)
+    for (int i = 0; i < CornerCount; i++)
     {
         cornerPerm[i] = static_cast<Corner>(i);
+        cornerOri[i] = 0;
     }
 
-    for (int i = 0; i < EDGE_COUNT; i++)
+    for (int i = 0; i < EdgeCount; i++)
     {
         edgePerm[i] = static_cast<Edge>(i);
+        edgeOri[i] = 0;
     }
 
 }
 
 bool CubieCube::isSolved()
 {
-    for (int i = 0; i < CORNER_COUNT; i++)
+    for (int i = 0; i < CornerCount; i++)
     {
         if(cornerPerm[i] != i | cornerOri[i] != 0)
         {
@@ -106,7 +135,7 @@ bool CubieCube::isSolved()
         }
     }
 
-    for (int i = 0; i < EDGE_COUNT; i++)
+    for (int i = 0; i < EdgeCount; i++)
     {
         if(edgePerm[i] != i | edgeOri[i] != 0)
         {
@@ -119,8 +148,6 @@ bool CubieCube::isSolved()
 
 void CubieCube::move(Move m)
 {
-    int amount = m % 3 + 1;
-    Face face = static_cast<Face>(m / 3);
 
     std::array<Edge, 4> ep;
     std::array<Corner, 4> cp;
@@ -128,26 +155,26 @@ void CubieCube::move(Move m)
     std::array<int, 4> co;
     for (int i = 0; i < 4; i++)
     {
-        ep[i] = edgePerm[FACE_EDGES[face][i]];
-        cp[i] = cornerPerm[FACE_CORNERS[face][i]];
-        eo[i] = edgeOri[FACE_EDGES[face][i]];
-        co[i] = cornerOri[FACE_CORNERS[face][i]];
+        ep[i] = edgePerm[FACE_EDGES[m.face][i]];
+        cp[i] = cornerPerm[FACE_CORNERS[m.face][i]];
+        eo[i] = edgeOri[FACE_EDGES[m.face][i]];
+        co[i] = cornerOri[FACE_CORNERS[m.face][i]];
     }
 
-    int mod = 4 - (amount % 4);
+    int mod = 4 - (m.rotations % 4);
 
     for (int i = 0; i < 4; i++)
     {
         int j = (mod + i) % 4;
-        edgePerm[FACE_EDGES[face][i]] = ep[j];
-        cornerPerm[FACE_CORNERS[face][i]] = cp[j];
-        edgeOri[FACE_EDGES[face][i]] = eo[j];
-        cornerOri[FACE_CORNERS[face][i]] = co[j];
+        edgePerm[FACE_EDGES[m.face][i]] = ep[j];
+        cornerPerm[FACE_CORNERS[m.face][i]] = cp[j];
+        edgeOri[FACE_EDGES[m.face][i]] = eo[j];
+        cornerOri[FACE_CORNERS[m.face][i]] = co[j];
     }
 
-    if (amount % 2 == 0) {return;}
+    if (m.rotations % 2 == 0) {return;}
 
-    switch (face)
+    switch (m.face)
     {
         case Right:
             updateCorner(URF, 1);
@@ -193,10 +220,10 @@ void CubieCube::updateCorner(Corner c, int amount)
 void CubieCube::invEdgePermCoord(int coord)
 {
     //tracks which digits were already used
-    std::array<bool, EDGE_COUNT> perms = {};
+    std::array<bool, EdgeCount> perms = {};
     
     int factorial = 479001600;
-    for(int i = EDGE_COUNT; i > 0; i--)
+    for(int i = EdgeCount; i > 0; i--)
     {
         //get lehnmer code digit
         factorial /= i;
@@ -223,10 +250,10 @@ void CubieCube::invEdgePermCoord(int coord)
 void CubieCube::invCornerPermCoord(int coord)
 {
     //tracks which digits were already used
-    std::array<bool, CORNER_COUNT> perms = {};
+    std::array<bool, CornerCount> perms = {};
     
     int factorial = 40320;
-    for(int i = CORNER_COUNT; i > 0; i--)
+    for(int i = CornerCount; i > 0; i--)
     {
         //get lehnmer code digit
         factorial /= i;
@@ -252,7 +279,7 @@ void CubieCube::invCornerPermCoord(int coord)
 void CubieCube::invEdgeOriCoord(int coord)
 {
     int sum = 0;
-    for (int i = EDGE_COUNT - 1; i > 0; i--)
+    for (int i = EdgeCount - 1; i > 0; i--)
     {
         int eo = coord % 2;
         edgeOri[i] = eo;
@@ -265,7 +292,7 @@ void CubieCube::invEdgeOriCoord(int coord)
 void CubieCube::invCornerOriCoord(int coord)
 {
     int sum = 0;
-    for (int i = CORNER_COUNT - 1; i > 0; i--)
+    for (int i = CornerCount - 1; i > 0; i--)
     {
         int co = coord % 3;
         cornerOri[i] = co;
@@ -281,7 +308,7 @@ int CubieCube::toCornerOriCoord()
 {
     int coord = 0;
 
-    for (int i = 1; i < CORNER_COUNT; i++)
+    for (int i = 1; i < CornerCount; i++)
     {
         coord = (3 * coord) + cornerOri[i];
     }
@@ -293,7 +320,7 @@ int CubieCube::toEdgeOriCoord()
 {
     int coord = 0;
 
-    for (int i = 1; i < EDGE_COUNT; i++)
+    for (int i = 1; i < EdgeCount; i++)
     {
         coord = (2 * coord) + edgeOri[i];
     }
@@ -367,7 +394,7 @@ int CubieCube::toUDSliceCoord()
 
 void CubieCube::invUDSliceCoord(int coord)
 {
-    std::array<bool, EDGE_COUNT> occupied {};
+    std::array<bool, EdgeCount> occupied {};
     int k = 3;
     int n = 11;
 
@@ -391,7 +418,7 @@ void CubieCube::invUDSliceCoord(int coord)
     int slice = UD_SLICE;
     int other = 0;
 
-    for(int i = 0; i < EDGE_COUNT; i++)
+    for(int i = 0; i < EdgeCount; i++)
     {
         if(occupied[i])
         {
@@ -406,22 +433,65 @@ void CubieCube::invUDSliceCoord(int coord)
     }
 }
 
-void CubieCube::multiplyEdges(CubieCube& cube)
+void CubieCube::multiplyEdges(const CubieCube& cube)
 {
-    for(int i = 0; i < EDGE_COUNT; i++)
-    {
-        edgePerm[i] = static_cast<Edge>((edgePerm[i] + cube.edgePerm[i]) % EDGE_COUNT);
+    std::array<Edge, EdgeCount> ep;
+    std::array<bool, EdgeCount> eo;
 
-        edgeOri[i] = (edgeOri[i] + cube.edgeOri[i]) % 2;
+    for(int i = 0; i < EdgeCount; i++)
+    {
+        ep[i] = edgePerm[cube.edgePerm[i]];
+
+        eo[i] = (cube.edgeOri[i] + edgeOri[cube.edgePerm[i]]) % 2;
     }
+
+    edgePerm = ep;
+    edgeOri = eo;
 }
 
-void CubieCube::multiplyCorners(CubieCube& cube)
+void CubieCube::multiplyCorners(const CubieCube& cube)
 {
-    for(int i = 0; i < CORNER_COUNT; i++)
-    {
-        cornerPerm[i] = static_cast<Corner>((cornerPerm[i] = cube.cornerPerm[i]) % CORNER_COUNT);
 
-        cornerOri[i] = (cornerOri[i] + cube.cornerOri[i] % 3);
+    std::array<Corner, CornerCount> cp;
+    std::array<int, CornerCount> co;
+
+    for(int i = 0; i < CornerCount; i++)
+    {
+        cp[i] = cornerPerm[cube.cornerPerm[i]];
+
+        int ori = 0;
+        int a = cornerOri[cube.cornerPerm[i]];
+        int b = cube.cornerOri[i];
+
+        //regular multiply, 0 <= ori < 3
+        if(a < 3 && b < 3)
+        {
+            ori = (a + b) % 3;
+        }
+        //multiply by mirrored, 3 <= ori < 6
+        else if((a >= 3 && b < 3) || (a < 3 && b >= 3))
+        {
+            ori = (a + b - 3) % 3 + 3;
+        }
+        //multiply mirrored cube by mirrored cube, 0 <= ori < 3
+        else if(a >= 3 && b >= 3)
+        {
+            ori = (a + b - 6) % 3;
+        }
+        else
+        {
+            assert(false);
+        }
+
+        co[i] = ori;
     }
+
+    cornerPerm = cp;
+    cornerOri = co;
+}
+
+void CubieCube::multiply(const CubieCube& cube)
+{
+    multiplyCorners(cube);
+    multiplyEdges(cube);
 }
