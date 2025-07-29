@@ -1,5 +1,4 @@
 #pragma once
-#include "coords/multi_coord.h"
 #include "move_table.h"
 #include "multi_index.h"
 #include <cstdint>

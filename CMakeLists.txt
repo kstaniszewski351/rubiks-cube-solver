@@ -16,7 +16,6 @@ FetchContent_MakeAvailable(ftxui)
 add_library(libcube STATIC
     src/libcube/cubie_cube.cpp
     src/libcube/face_cube.cpp
-    src/libcube/symmetries.cpp
     src/libcube/move_table.cpp
     src/libcube/coords/edge_flip_generator.cpp
     src/libcube/coords/corner_twist_generator.cpp
@@ -24,10 +23,7 @@ add_library(libcube STATIC
     src/libcube/coords/ud_slice_perm_generator.cpp
     src/libcube/coords/corner_perm_generator.cpp
     src/libcube/coords/ud_perm_generator.cpp
-    src/libcube/coords/multi_coord.cpp
-    src/libcube/coords/sym_coord.cpp
     src/libcube/pruning.cpp
-    src/libcube/sym_conj.cpp
     src/libcube/phase1.cpp
     src/libcube/multi_index.cpp
 )
@@ -67,7 +63,6 @@ target_link_libraries(test_solver libcube)
 
 add_executable(tests
     src/tests/test_coords.cpp
-    src/tests/test_symmetries.cpp
 )
 target_link_libraries(tests
     GTest::gtest_main
