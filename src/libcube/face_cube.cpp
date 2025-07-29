@@ -14,7 +14,7 @@ void FaceCube::reset()
     {
         for(int j = 0; j < FACELET_COUNT; j++)
         {
-            facelets[i][j] = static_cast<Face>(i);
+            facelets[i * FACELET_COUNT + j] = static_cast<Face>(i);
         }
     };
 }
@@ -41,7 +41,7 @@ FaceCube::FaceCube(const CubieCube& cube)
                 r = ((p + cube.cornerOri[i]) % 3 + p) % 3;
             }
 
-            facelets[CORNER_COLORS[i][p]][CORNER_POSITIONS[i][p]] = CORNER_COLORS[cube.cornerPerm[i]][r];
+            facelets[CORNER_COLORS[i][p] * FACELET_COUNT + CORNER_POSITIONS[i][p]] = CORNER_COLORS[cube.cornerPerm[i]][r];
         }
     }
 
@@ -51,16 +51,16 @@ FaceCube::FaceCube(const CubieCube& cube)
 
         for(int p = 0; p < 2; p++)
         {
-            int r = (p + cube.edgeOri[i]) % 2;
+            int r = (p + cube.edgeFlip[i]) % 2;
 
-            facelets[EDGE_COLORS[i][p]][EDGE_POSITIONS[i][p]] = EDGE_COLORS[cube.edgePerm[i]][r];
+            facelets[EDGE_COLORS[i][p] * FACELET_COUNT + EDGE_POSITIONS[i][p]] = EDGE_COLORS[cube.edgePerm[i]][r];
         }
     }
 }
 
 void FaceCube::move(Move m)
 {
-    
+
 }
 
 //checks if cube can be safely converted to CubieCube
@@ -72,7 +72,7 @@ bool FaceCube::isValid()
     {
         for(int j = 0; j < FACELET_COUNT; j++)
         {
-            count[facelets[i][j]] ++;
+            count[facelets[i * FACELET_COUNT + j]] ++;
         }
     }
 
@@ -90,7 +90,7 @@ bool FaceCube::isValid()
 
         for(int j = 0; j < 3; j ++)
         {
-            if(!colors.insert(facelets[CORNER_COLORS[i][j]][CORNER_POSITIONS[i][j]]).second)
+            if(!colors.insert(facelets[CORNER_COLORS[i][j] * FACELET_COUNT + CORNER_POSITIONS[i][j]]).second)
             {
                 return false;
             };

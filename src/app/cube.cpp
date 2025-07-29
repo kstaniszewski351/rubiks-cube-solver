@@ -50,16 +50,16 @@ Element CubeBase::OnRender()
             }
             else if( i > CENTER)
             {
-                c = face_cube_.facelets[f][i - 1];
+                c = face_cube_.facelets[f * FACELET_COUNT + i - 1];
             }
             else
             {
-                c = face_cube_.facelets[f][i];
+                c = face_cube_.facelets[f * FACELET_COUNT + i];
             }
 
             if(tile_pos == cursor_pos_ && to_set_ != FaceCount)
             {
-                face_cube_.facelets[f][c] = to_set_;
+                face_cube_.facelets[f * FACELET_COUNT + c] = to_set_;
                 c = to_set_;
                 to_set_ = FaceCount;
             }

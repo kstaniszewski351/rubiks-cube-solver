@@ -49,8 +49,8 @@ UI::UI() : screen_(ScreenInteractive::Fullscreen())
                 success = false;
                 break;
             }
-
-            moves.push_back(static_cast<Move>(std::distance(MOVE_NAMES.begin(), result)));
+            int index = std::distance(MOVE_NAMES.begin(), result);
+            moves.push_back(static_cast<Move>(index));
         }
 
         if(!success) { return;}
@@ -87,28 +87,30 @@ UI::UI() : screen_(ScreenInteractive::Fullscreen())
     {   
         if(scramble_move_count.empty()) {return; };
         int move_count = std::stoi(scramble_move_count);
-        std::uniform_int_distribution<> distrib(0, MoveCount - 1);
+        std::uniform_int_distribution<> rotation_distrib(1, 3);
+        std::uniform_int_distribution<> face_distrib(0, FaceCount - 1);
         std::random_device random;
         std::mt19937 rng(random());
         
-        int last_move = 0;
+        int last_face = -1;
         for(int i = 0; i < move_count; i++)
         {
-            int generated = distrib(rng);
-
-            while(generated / 3 == last_move / 3)
+            int face = face_distrib(rng);
+            while(face == last_face)
             {
-                generated = distrib(rng);
+                face = face_distrib(rng);
             }
-            last_move = generated;
+            last_face = face;
+
+            int rotation = rotation_distrib(rng);
             
-            auto move = static_cast<Move>(generated);
+            auto move = Move(static_cast<Move>(face * 3 + rotation));
 
             scramble_.push_back(move);
             cube_.move(move);
         }
 
-        face_cube_ = cube_;
+        face_cube_ = FaceCube(cube_);
     });
 
     auto bottom_container = Container::Horizontal({
@@ -146,7 +148,7 @@ UI::UI() : screen_(ScreenInteractive::Fullscreen())
             corner_perm += " ";
         }
 
-        for(int i: cube_.edgeOri)
+        for(int i: cube_.edgeFlip)
         {
             edge_ori += std::to_string(i) + " ";
         }

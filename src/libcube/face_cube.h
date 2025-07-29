@@ -10,6 +10,6 @@ public:
     FaceCube(const CubieCube& cube);
     void move(Move m);
     void reset();
-    std::array<std::array<Face, FACELET_COUNT>, FaceCount> facelets;
+    std::array<Face, FACELET_COUNT * FaceCount> facelets;
     bool isValid();
 };

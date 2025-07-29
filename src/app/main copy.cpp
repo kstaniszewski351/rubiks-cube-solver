@@ -7,10 +7,10 @@
 #include "coord_cube.h"
 #include "coord_moves.h"
 #include "face_cube.h"
-#include "symmetry.h"
+#include "symmetries.h"
 #include "defs.h"
 #include "util.h"
-#include "symmetry.h"
+#include "symmetries.h"
 #include "const.h"
 
 CubieCube cube = CubieCube();
@@ -175,7 +175,7 @@ void moveCube()
 
 void testSyms()
 {
-    Symmetry* sym = new Symmetry();
+    Symmetries* sym = new Symmetries();
 
     sym->generateSyms();
 
@@ -239,7 +239,7 @@ void printCubieCube()
     std::cout << "\n";
 
     std::cout << "Edge orientation: ";
-    for(int i: cube.edgeOri)
+    for(int i: cube.edgeFlip)
     {
         std::cout << i << " ";
     }

@@ -4,6 +4,8 @@
 #include <string>
 #include <map>
 #include "defs.h"
+#include <streambuf>
+#include <ostream>
 
 class CoordCube;
 class FaceCube;
@@ -11,32 +13,25 @@ class FaceCube;
 class CubieCube
 {
 public:
-    std::array<Edge, EdgeCount> edgePerm{};
-    std::array<Corner, CornerCount> cornerPerm{};
-    std::array<bool, EdgeCount> edgeOri{};
-    std::array<int, CornerCount> cornerOri{};
+    std::array<Edge, EdgeCount> edgePerm;
+    std::array<Corner, CornerCount> cornerPerm;
+    std::array<bool, EdgeCount> edgeFlip;
+    std::array<int, CornerCount> cornerOri;
 
     CubieCube();
     CubieCube(const CoordCube& c);
     CubieCube(const FaceCube& c);
     CubieCube(const std::array<Edge, EdgeCount>& ep, const std::array<Corner, CornerCount>& cp, const std::array<bool, EdgeCount>& eo, const std::array<int, CornerCount>& co);
 
-    bool operator==(const CubieCube& c);
-    bool operator!=(const CubieCube& c);
+    bool operator==(const CubieCube& c) const;
+    bool operator!=(const CubieCube& c) const;
+
+    friend std::ostream& operator<<(std::ostream& os, const CubieCube& cube);
 
     void move(Move m);
+    void move(int m);
     void reset();
-    bool isSolved();
-    void invEdgePermCoord(int coord);
-    void invCornerPermCoord(int coord);
-    void invEdgeOriCoord(int coord);
-    void invCornerOriCoord(int coord);
-    void invUDSliceCoord(int coord);
-    int toCornerOriCoord();
-    int toEdgeOriCoord();
-    int toCornerPermCoord();
-    int toEdgePermCoord();
-    int toUDSliceCoord();
+    bool isSolved() const;
     void multiplyCorners(const CubieCube& cube);
     void multiplyEdges(const CubieCube& cube);
     void multiply(const CubieCube& cube);
