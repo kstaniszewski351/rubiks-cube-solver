@@ -1,11 +1,11 @@
 #pragma once
 #include "searchable.h"
 
-template<typename Coord, typename ToSearch>
+template<typename Coord>
 class IDAsearch
 {
 public:
-    IDAsearch(Searchable<Coord, ToSearch>* searchable) : 
+    IDAsearch(Searchable<Coord>* searchable) : 
         searchable_(searchable)
     {
         coord_stack_.reserve(searchable_->getMaxDepth() + 1);
@@ -68,7 +68,7 @@ private:
         }
         return min_distance;
     };
-    Searchable<Coord, ToSearch>* searchable_;
+    Searchable<Coord>* searchable_;
     std::vector<Move> move_stack_;
     std::vector<Coord> coord_stack_;
 };

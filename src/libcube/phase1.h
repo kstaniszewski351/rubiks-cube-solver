@@ -18,7 +18,7 @@ struct Phase1Coord
     int twist;
 };
 
-class Phase1 : public Searchable<Phase1Coord, Phase1>
+class Phase1 : public Searchable<Phase1Coord>
 {
 public:
     Phase1();
@@ -37,5 +37,5 @@ private:
     const Pruning flip_slice_pos_pruning_;
     const Pruning twist_slice_pos_pruning_;
     std::vector<Move> move_buffer_;
-    IDAsearch<Phase1Coord, Phase1> search_;
+    IDAsearch<Phase1Coord> search_;
 };
