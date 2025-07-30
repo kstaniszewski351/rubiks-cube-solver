@@ -4,23 +4,17 @@
 #include <iostream>
 
 
-
 Phase1::Phase1() :
     flip_moves_(&flip_gen_),
     slice_pos_moves_(&slice_pos_gen_),
     twist_moves_(&twist_gen_),
     flip_slice_pos_pruning_({&flip_moves_, &slice_pos_moves_}, {&flip_gen_, &slice_pos_gen_}),
-    twist_slice_pos_pruning_({&twist_moves_, &slice_pos_moves_}, {&twist_gen_, &slice_pos_gen_})
+    twist_slice_pos_pruning_({&twist_moves_, &slice_pos_moves_}, {&twist_gen_, &slice_pos_gen_}),
+    search_(this)
 {
-
+    move_buffer_.reserve(15);
 }
 
-bool Phase1Coord::isSolved() const
-{
-    return flip == 0 && slice_pos == 0 && twist == 0;
-}
-
-constexpr int phase1_max_depth = 12;
 
 std::vector<Move> Phase1::solve(const CubieCube& cube)
 {
@@ -29,73 +23,36 @@ std::vector<Move> Phase1::solve(const CubieCube& cube)
     coord.slice_pos = slice_pos_gen_.getCoord(cube);
     coord.twist = twist_gen_.getCoord(cube);
 
-    std::vector<Phase1Coord> coord_stack;
-    std::vector<Move> move_stack;
+    auto solution = search_.search(coord);
 
-    coord_stack.reserve(phase1_max_depth);
-    move_stack.reserve(phase1_max_depth - 1);
-
-    int bound = estimateDistanceLeft(coord);
-    coord_stack.push_back(coord);
-    
-    while(true)
-    {
-        bound = IDASearch(coord_stack, move_stack, 0, bound);
-        if(bound == 0) {break;}
-    }
-    move_stack.shrink_to_fit();
-
-    return move_stack;
+    return solution;
 }
 
-constexpr int infinity = std::numeric_limits<int>::max();
+constexpr int phase1_max_depth = 12;
 
-int Phase1::IDASearch(std::vector<Phase1Coord>& coord_stack, std::vector<Move>& move_stack, int depth, int bound)
+int Phase1::getMaxDepth() const
 {
-    const Phase1Coord coord = coord_stack.back();
-    const int distance_left = estimateDistanceLeft(coord);
-    const int total_distance = depth + distance_left;
+    return phase1_max_depth;
+}
 
-    if(total_distance > bound) { return total_distance; }
-    if(distance_left == 0) { return 0; }
-    
-    int min_distance = infinity;
+const std::vector<Move>& Phase1::getMoves(Phase1Coord coord, Move last_move = Invalid)
+{
+    move_buffer_.clear();
 
+    int last_face = -1;
+    for(int move = 0; move < MOVE_COUNT; move++)
+    {
+        int face = move / 3;
 
-    int last_face;
-    if(move_stack.empty())
-    {
-        last_face = -1;
-    }
-    else
-    {
-        last_face = move_stack.back() / 3;
-    }
-    
-    for(int move = 0; move < MOVE_COUNT; ++move)
-    {
-        const int face = move / 3;
         if(face == last_face) {continue;}
 
-        Phase1Coord new_coord = moveCoord(coord, static_cast<Move>(move));
-        coord_stack.push_back(new_coord);
-        move_stack.push_back(static_cast<Move>(move));
-
-        const int distance_left = IDASearch(coord_stack, move_stack, depth + 1, bound);
-        if(distance_left == 0)
-        {
-            return distance_left;
-        }
-        
-        if(distance_left < min_distance) {min_distance = distance_left; }
-
-        coord_stack.pop_back();
-        move_stack.pop_back();
+        move_buffer_.push_back(static_cast<Move>(move));
     }
-    return min_distance;
-};
 
-int Phase1::estimateDistanceLeft(Phase1Coord coord)
+    return move_buffer_;
+}
+
+int Phase1::estimateDistanceLeft(Phase1Coord coord) const
 {
     const std::array<int, 2> flip_slice_pos_buff {coord.flip, coord.slice_pos};
     const std::array<int, 2> twist_slice_pos_buff {coord.twist, coord.slice_pos};
@@ -106,7 +63,7 @@ int Phase1::estimateDistanceLeft(Phase1Coord coord)
     return std::max(flip_slice_pos_distance, twist_slice_pos_distance);
 }
 
-Phase1Coord Phase1::moveCoord(Phase1Coord coord, Move move)
+Phase1Coord Phase1::move(Phase1Coord coord, Move move) const
 {
     Phase1Coord new_coord;
 

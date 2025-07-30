@@ -17,6 +17,28 @@ bool isPhase1Solved(const CubieCube& cube)
     return true;
 }
 
+constexpr std::array<std::string_view, 18> move_names
+{
+    "U",
+    "U2",
+    "U'",
+    "D",
+    "D2",
+    "D'",
+    "R",
+    "R2",
+    "R'",
+    "L",
+    "L2",
+    "L'",
+    "F",
+    "F2",
+    "F'",
+    "B",
+    "B2",
+    "B'"
+};
+
 int main()
 {
     std::cout << "Starting set up\n";
@@ -32,13 +54,30 @@ int main()
 
     CubieCube cube;
 
-    std::vector<Move> scramble = {LP, F2, L, D, FP, U, RP, U, F2, UP, B, D2, U, B, RP, B, F2, R2, U, DP, LP, F, U, B, FP};
+    std::cout << "Input scramble: ";
+    std::string scramble_string;
+    std::getline(std::cin, scramble_string);
+
+    std::vector<Move> scramble;
+    auto scramble_stream = std::istringstream(scramble_string);
+    std::string move_string;
+    while(scramble_stream >> move_string)
+    {
+        auto move_iter = std::find(move_names.begin(), move_names.end(), move_string);
+        if(move_iter == move_names.end())
+        {
+            std::cout << "Invalid move: " << move_iter << "\n";
+            return 0;
+        }
+        const int move_index = std::distance(move_names.begin(), move_iter);
+
+        scramble.push_back(static_cast<Move>(move_index));
+    }  
 
     for(Move m : scramble)
     {
         cube.move(m);
     }
-
 
     auto solve_begin_time = std::chrono::steady_clock::now();
 
@@ -53,6 +92,12 @@ int main()
     }
 
     std::cout << cube << "\n";
+    std::cout << "Solution: ";
+    for(Move m : solution)
+    {
+        std::cout << move_names[m] << " ";
+    }
+    std::cout <<"\n";
     std::cout << "Solving took " << solve_duration.count() << "ms\n";
 
     return 0;

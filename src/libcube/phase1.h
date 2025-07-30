@@ -8,21 +8,25 @@
 #include "move_table.h"
 #include "pruning.h"
 #include <stack>
+#include "searchable.h"
+#include "ida_search.h"
 
 struct Phase1Coord
 {
     int flip;
     int slice_pos;
     int twist;
-
-    bool isSolved() const;
 };
 
-class Phase1
+class Phase1 : public Searchable<Phase1Coord, Phase1>
 {
 public:
     Phase1();
     std::vector<Move> solve(const CubieCube& cube);
+    int estimateDistanceLeft(Phase1Coord coord) const;
+    const std::vector<Move>& getMoves(Phase1Coord coord, Move last_move);
+    Phase1Coord move(Phase1Coord coord, Move move) const;
+    int getMaxDepth() const;
 private:
     const EdgeFlipGenerator flip_gen_;
     const UDSlicePosGenerator slice_pos_gen_;
@@ -32,8 +36,6 @@ private:
     const MoveTable twist_moves_;
     const Pruning flip_slice_pos_pruning_;
     const Pruning twist_slice_pos_pruning_;
-
-    int IDASearch(std::vector<Phase1Coord>& coord_stack, std::vector<Move>& move_stack, int depth, int bound);
-    int estimateDistanceLeft(Phase1Coord coord);
-    Phase1Coord moveCoord(Phase1Coord coord, Move m);
+    std::vector<Move> move_buffer_;
+    IDAsearch<Phase1Coord, Phase1> search_;
 };

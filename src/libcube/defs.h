@@ -43,22 +43,6 @@ enum Face
     FaceCount
 };
 
-// struct Move
-// {
-//     constexpr Move(Face face, int rotations) : face(face), rotations(rotations) {}
-//     constexpr Move(int i)
-//     {
-//         face = static_cast<Face>(i / 3);
-//         rotations = (i % 3) + 1;
-//     }
-//     constexpr int toInt()
-//     {
-//         return face * 3 + (rotations - 1);
-//     }
-//     Face face;
-//     int rotations;
-// };
-
 enum Move
 {
     U,
@@ -78,7 +62,9 @@ enum Move
     FP,
     B,
     B2,
-    BP
+    BP,
+    MoveCount,
+    Invalid
 };
 
 constexpr int SYM_COUNT = 48;
@@ -93,13 +79,12 @@ constexpr std::array<std::array<Face, 2>, EdgeCount> EDGE_COLORS =
     {Down, Right},
     {Down, Left},
     {Down, Back},
-
     {Up, Front},
     {Down, Front},
     {Front, Right},
     {Front, Left},
     {Back, Right},
-    {Back, Left},
+    {Back, Left}
 }};
 
 constexpr std::array<std::array<Face, 3>, CornerCount> CORNER_COLORS =
@@ -123,7 +108,7 @@ constexpr std::array<std::array<Corner, 4>, 6> FACE_CORNERS =
     {URF, UBR, DRB, DFR},
     {ULB, UFL, DLF, DBL},
     {UFL, URF, DFR, DLF},
-    {UBR, ULB, DBL, DRB},
+    {UBR, ULB, DBL, DRB}
 }};
 
 constexpr std::array<std::array<Edge, 4>, 6> FACE_EDGES =
@@ -133,7 +118,7 @@ constexpr std::array<std::array<Edge, 4>, 6> FACE_EDGES =
     {UR, BR, DR, FR},
     {UL, FL, DL, BL},
     {UF, FR, DF, FL},
-    {UB, BL, DB, BR},
+    {UB, BL, DB, BR}
 }};
 
 constexpr int FACELET_COUNT = 8;

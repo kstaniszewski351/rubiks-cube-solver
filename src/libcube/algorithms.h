@@ -3,9 +3,6 @@
 #include <span>
 #include <concepts>
 
-//encodes values of elements in an array of lenght N
-//as a coordinate ranging from 0 to base^(N-1)
-//doesnt encode position of element at index 0
 template<typename Iterator>
 int baseNEncode(int base, Iterator begin, Iterator end)
 {
@@ -50,9 +47,6 @@ constexpr T factorial(T value)
     return result;
 }
 
-//encodes permutation of N unique elements
-//with values ranging from 0 to N - 1
-//as a coordinate that ranges from 0 to N! - 1
 template<typename Iterator>
 int lehmerEncode(Iterator begin, Iterator end)
 {
@@ -72,26 +66,22 @@ int lehmerEncode(Iterator begin, Iterator end)
         {
             if(*j < *i)
             {
-                ++digit;
+                digit++;
             }
-            ++j;
+            j++;
         }    
 
         //encode factoradic
         coord = factorial * digit + coord;
 
         factorial = factorial * (iter);
-        ++iter;
-        --i;
+        iter++;
+        i--;
     }
 
     return coord;
 }
 
-//decodes coordinate ranging from 0 to N! - 1
-//as a permutation of N unique elements with values
-//ranging from 0 to N - 1
-//works with integral types and enums
 template<typename T, typename Iterator>
 void lehmerDecode(int coord, int lenght, Iterator end)
 {
@@ -118,10 +108,6 @@ void lehmerDecode(int coord, int lenght, Iterator end)
     }
 }
 
-
-
-//calculate binomial coefficient using
-//multiplicative formula
 template<typename T>
 requires std::integral<T>
 constexpr T biCoeff(T n, T k)
@@ -135,10 +121,6 @@ constexpr T biCoeff(T n, T k)
     return result;
 }
 
-//encodes combination of elements which meet toEncode predicate
-//as a coordinate ranging from 0 to bicoeff(N, k) - 1, k = number of elements
-//which meet toEncode
-//doesnt preserve order
 template<typename T, size_t N, typename F>
 int combinationEncode(const std::array<T, N>& array, F&& predicate)
 {
