@@ -25,6 +25,7 @@ add_library(libcube STATIC
     src/libcube/coords/ud_perm_generator.cpp
     src/libcube/pruning.cpp
     src/libcube/phase1.cpp
+    src/libcube/phase2.cpp
     src/libcube/multi_index.cpp
 )
 target_include_directories(libcube PUBLIC src/libcube)

@@ -11,7 +11,7 @@ public:
         coord_stack_.reserve(searchable_->getMaxDepth() + 1);
         move_stack_.reserve(searchable_->getMaxDepth());
     };
-    std::vector<Move> search(Coord coord)
+    std::vector<int> search(Coord coord)
     {
         coord_stack_.clear();
         move_stack_.clear();
@@ -40,13 +40,13 @@ private:
         
 
         int min_distance = -1;
-        Move last_move = Invalid;
+        int last_move = -1;
 
         if(!move_stack_.empty()) {last_move = move_stack_.back(); }
 
-        const std::vector<Move>& moves = searchable_->getMoves(coord, last_move);
+        const std::vector<int>& moves = searchable_->getMoves(coord, last_move);
 
-        for(Move move : moves)
+        for(int move : moves)
         {
             Coord new_coord = searchable_->move(coord, move);
             coord_stack_.push_back(new_coord);
@@ -69,6 +69,6 @@ private:
         return min_distance;
     };
     Searchable<Coord>* searchable_;
-    std::vector<Move> move_stack_;
+    std::vector<int> move_stack_;
     std::vector<Coord> coord_stack_;
 };

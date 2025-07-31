@@ -6,8 +6,8 @@ template<typename Coord>
 class Searchable
 {
 public:
-    virtual int estimateDistanceLeft(Coord coord) const;
-    virtual const std::vector<Move>& getMoves(Coord coord, Move last_move);
-    virtual Coord move(Coord coord, Move move) const;
-    virtual int getMaxDepth() const;
+    virtual int estimateDistanceLeft(Coord coord) const = 0;
+    virtual const std::vector<int>& getMoves(Coord coord, int last_move) = 0;
+    virtual Coord move(Coord coord, int move) const = 0;
+    virtual int getMaxDepth() const = 0;
 };

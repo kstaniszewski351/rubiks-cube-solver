@@ -12,7 +12,7 @@ Phase1::Phase1() :
     twist_slice_pos_pruning_({&twist_moves_, &slice_pos_moves_}, {&twist_gen_, &slice_pos_gen_}),
     search_(this)
 {
-    move_buffer_.reserve(15);
+    move_buffer_.reserve(18);
 }
 
 
@@ -23,7 +23,13 @@ std::vector<Move> Phase1::solve(const CubieCube& cube)
     coord.slice_pos = slice_pos_gen_.getCoord(cube);
     coord.twist = twist_gen_.getCoord(cube);
 
-    auto solution = search_.search(coord);
+    std::vector<int> solution_move_indexes = search_.search(coord);
+    std::vector<Move> solution;
+
+    for(int i : solution_move_indexes)
+    {
+        solution.push_back(static_cast<Move>(i));
+    }
 
     return solution;
 }
@@ -35,18 +41,22 @@ int Phase1::getMaxDepth() const
     return phase1_max_depth;
 }
 
-const std::vector<Move>& Phase1::getMoves(Phase1Coord coord, Move last_move = Invalid)
+const std::vector<int>& Phase1::getMoves(Phase1Coord coord, int last_move = -1)
 {
     move_buffer_.clear();
 
     int last_face = -1;
+    if(last_move != -1)
+    {
+        last_face = last_move / 3;
+    }
     for(int move = 0; move < MOVE_COUNT; move++)
     {
         int face = move / 3;
 
         if(face == last_face) {continue;}
 
-        move_buffer_.push_back(static_cast<Move>(move));
+        move_buffer_.push_back(move);
     }
 
     return move_buffer_;
@@ -63,7 +73,7 @@ int Phase1::estimateDistanceLeft(Phase1Coord coord) const
     return std::max(flip_slice_pos_distance, twist_slice_pos_distance);
 }
 
-Phase1Coord Phase1::move(Phase1Coord coord, Move move) const
+Phase1Coord Phase1::move(Phase1Coord coord, int move) const
 {
     Phase1Coord new_coord;
 

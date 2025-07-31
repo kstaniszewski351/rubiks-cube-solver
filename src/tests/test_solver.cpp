@@ -1,4 +1,5 @@
 #include <phase1.h>
+#include <phase2.h>
 #include <iostream>
 #include <chrono>
 
@@ -45,6 +46,7 @@ int main()
     auto setup_begin_time = std::chrono::steady_clock::now();
 
     Phase1 phase1;
+    Phase2 phase2;
 
     auto setup_end_time = std::chrono::steady_clock::now();
     auto total_time = setup_begin_time - setup_end_time;
@@ -78,27 +80,51 @@ int main()
     {
         cube.move(m);
     }
+    std::cout << "Scrambled cube: \n";
+    std::cout << cube;
 
-    auto solve_begin_time = std::chrono::steady_clock::now();
+    auto phase1_begin_time = std::chrono::steady_clock::now();
 
-    auto solution = phase1.solve(cube);
+    std::vector<Move> phase_1_solution = phase1.solve(cube);
 
-    auto solve_end_time = std::chrono::steady_clock::now();
-    std::chrono::duration<float, std::milli> solve_duration = solve_end_time - solve_begin_time;
+    auto phase1_end_time = std::chrono::steady_clock::now();
+    std::chrono::duration<float, std::milli> phase1_duration = phase1_end_time - phase1_begin_time;
 
-    for(Move m : solution)
+    for(Move m : phase_1_solution)
     {
         cube.move(m);
     }
 
+    auto phase2_begin_time = std::chrono::steady_clock::now();
+
+    std::vector<Move> phase_2_solution = phase2.solve(cube);
+
+    auto phase2_end_time = std::chrono::steady_clock::now();
+
+    std::chrono::duration<float, std::milli> phase2_duration = phase2_end_time - phase2_begin_time;
+    std::chrono::duration<float, std::milli> solve_duration = phase2_end_time - phase1_begin_time;
+
+    for(Move m : phase_2_solution)
+    {
+        cube.move(m);
+    }
+    std::cout << "Solved cube: \n";
     std::cout << cube << "\n";
     std::cout << "Solution: ";
-    for(Move m : solution)
+    for(Move m : phase_1_solution)
     {
         std::cout << move_names[m] << " ";
     }
+    for(Move m : phase_2_solution)
+    {
+        std::cout << move_names[m] << " ";
+    }
+    std::cout << "Lenght: " << (phase_1_solution.size() + phase_2_solution.size()) << "\n";
     std::cout <<"\n";
-    std::cout << "Solving took " << solve_duration.count() << "ms\n";
+    std::vector test = phase2.getMoves(Phase2Coord(), U);
+    std::cout << "Phase 1 took " << phase1_duration.count() << "ms\n";
+    std::cout << "Phase 2 took " << phase2_duration.count() << "ms\n";
+    std::cout << "Total solve time " << solve_duration.count() << "ms\n";
 
     return 0;
 }

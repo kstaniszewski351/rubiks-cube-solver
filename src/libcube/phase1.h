@@ -23,10 +23,10 @@ class Phase1 : public Searchable<Phase1Coord>
 public:
     Phase1();
     std::vector<Move> solve(const CubieCube& cube);
-    int estimateDistanceLeft(Phase1Coord coord) const;
-    const std::vector<Move>& getMoves(Phase1Coord coord, Move last_move);
-    Phase1Coord move(Phase1Coord coord, Move move) const;
-    int getMaxDepth() const;
+    int estimateDistanceLeft(Phase1Coord coord) const override;
+    const std::vector<int>& getMoves(Phase1Coord coord, int last_move) override;
+    Phase1Coord move(Phase1Coord coord, int move) const override;
+    int getMaxDepth() const override;
 private:
     const EdgeFlipGenerator flip_gen_;
     const UDSlicePosGenerator slice_pos_gen_;
@@ -36,6 +36,6 @@ private:
     const MoveTable twist_moves_;
     const Pruning flip_slice_pos_pruning_;
     const Pruning twist_slice_pos_pruning_;
-    std::vector<Move> move_buffer_;
+    std::vector<int> move_buffer_;
     IDAsearch<Phase1Coord> search_;
 };
