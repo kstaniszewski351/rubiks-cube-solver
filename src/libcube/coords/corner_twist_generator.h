@@ -1,7 +1,7 @@
 #pragma once
 #include "coord_generator.h"
 #include "cubie_cube.h"
-#include "util.h"
+#include "algorithms.h"
 
 class CornerTwistGenerator : public CoordGenerator
 {

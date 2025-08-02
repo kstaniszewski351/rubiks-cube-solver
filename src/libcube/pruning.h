@@ -1,5 +1,4 @@
 #pragma once
-#include "coords/multi_coord.h"
 #include "move_table.h"
 #include "multi_index.h"
 #include <cstdint>
@@ -7,7 +6,7 @@
 class Pruning
 {
 public:
-    Pruning(std::vector< MoveTable const*> move_tables, std::vector<CoordGenerator const*> generators, int n_moves = MOVE_COUNT);
+    Pruning(std::vector< MoveTable const*> move_tables, std::vector<CoordGenerator const*> generators, int n_moves = MoveCount);
 
     template<typename Iterator>
     int getDistance(Iterator begin) const

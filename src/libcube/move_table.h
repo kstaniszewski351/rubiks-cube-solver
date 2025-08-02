@@ -5,6 +5,7 @@
 #include <cubie_cube.h>
 #include "defs.h"
 #include "coords/coord_generator.h"
+#include "move.h"
 
 class MoveTable
 {

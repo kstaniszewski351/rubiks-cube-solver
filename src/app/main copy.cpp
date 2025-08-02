@@ -9,7 +9,7 @@
 #include "face_cube.h"
 #include "symmetries.h"
 #include "defs.h"
-#include "util.h"
+#include "algorithms.h"
 #include "symmetries.h"
 #include "const.h"
 

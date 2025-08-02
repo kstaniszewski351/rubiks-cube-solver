@@ -1,19 +1,20 @@
 #include "move_table.h"
 #include "coords/coord_generator.h"
+#include "move.h"
 
 MoveTable::MoveTable(CoordGenerator const* generator) :
-    table_(generator->getMaxCoord() * MOVE_COUNT),
-    n_moves_(MOVE_COUNT)
+    table_(generator->getMaxCoord() * MoveCount),
+    n_moves_(MoveCount)
 {
 
     CubieCube c;
     for(int coord = 0; coord < generator->getMaxCoord(); ++coord)
     {
-        for(int move = 0; move < MOVE_COUNT; move++)
+        for(int move = 0; move < MoveCount; move++)
         {
             generator->invertCoord(coord, c);
             c.move(static_cast<Move>(move));
-            table_[coord * MOVE_COUNT + move] = generator->getCoord(c);
+            table_[coord * MoveCount + move] = generator->getCoord(c);
         }
     }
 }

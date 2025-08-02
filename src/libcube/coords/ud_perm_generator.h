@@ -1,6 +1,6 @@
 #pragma once
 #include "coord_generator.h"
-#include "util.h"
+#include "algorithms.h"
 #include "defs.h"
 
 class UDPermGenerator : public CoordGenerator

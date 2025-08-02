@@ -1,4 +1,4 @@
-#include "util.h"
+#include "algorithms.h"
 #include "cubie_cube.h"
 #include <defs.h>
 #include <utility>

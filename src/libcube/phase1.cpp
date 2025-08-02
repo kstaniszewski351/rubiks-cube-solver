@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <limits>
 #include <iostream>
+#include "move.h"
 
 
 
@@ -48,7 +49,6 @@ std::vector<Move> Phase1::solve(const CubieCube& cube)
     return move_stack;
 }
 
-constexpr int infinity = std::numeric_limits<int>::max();
 
 int Phase1::IDASearch(std::vector<Phase1Coord>& coord_stack, std::vector<Move>& move_stack, int depth, int bound)
 {
@@ -59,23 +59,11 @@ int Phase1::IDASearch(std::vector<Phase1Coord>& coord_stack, std::vector<Move>& 
     if(total_distance > bound) { return total_distance; }
     if(distance_left == 0) { return 0; }
     
-    int min_distance = infinity;
-
-
-    int last_face;
-    if(move_stack.empty())
-    {
-        last_face = -1;
-    }
-    else
-    {
-        last_face = move_stack.back() / 3;
-    }
+    int min_distance = -1;
     
-    for(int move = 0; move < MOVE_COUNT; ++move)
+    for(int move = 0; move < MoveCount; move++)
     {
-        const int face = move / 3;
-        if(face == last_face) {continue;}
+        if(isMoveRedundant(static_cast<Move>(move), move_stack.begin(), move_stack.end())) {continue;}
 
         Phase1Coord new_coord = moveCoord(coord, static_cast<Move>(move));
         coord_stack.push_back(new_coord);
@@ -87,7 +75,7 @@ int Phase1::IDASearch(std::vector<Phase1Coord>& coord_stack, std::vector<Move>& 
             return distance_left;
         }
         
-        if(distance_left < min_distance) {min_distance = distance_left; }
+        if(distance_left < min_distance || min_distance == -1) {min_distance = distance_left; }
 
         coord_stack.pop_back();
         move_stack.pop_back();

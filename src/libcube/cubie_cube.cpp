@@ -2,7 +2,6 @@
 #include "face_cube.h"
 #include "defs.h"
 #include "assert.h"
-#include "util.h"
 #include <vector>
 #include <algorithm>
 #include <numeric>

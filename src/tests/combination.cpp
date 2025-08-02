@@ -1,6 +1,6 @@
 #include <iostream>
 #include <array>
-#include <util.h>
+#include <algorithms.h>
 #include <defs.h>
 
 int main()
