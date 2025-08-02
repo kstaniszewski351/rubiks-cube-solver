@@ -1,36 +1,26 @@
 #include "move.h"
+
 #include <random>
 
-Face getMoveFace(Move move)
-{
-    return static_cast<Face>(move / 3);
-}
+Face getMoveFace(Move move) { return static_cast<Face>(move / 3); }
 
-Axis getFaceAxis(Face face)
-{
-    return static_cast<Axis>(face / 2);
-}
+Axis getFaceAxis(Face face) { return static_cast<Axis>(face / 2); }
 
+std::vector<Move> randomScramble(int lenght, int seed) {
+  std::vector<Move> moves;
+  auto move_distrib = std::uniform_int_distribution<>(0, MoveCount - 1);
+  moves.reserve(lenght);
+  auto random = std::mt19937(seed);
 
-std::vector<Move> randomScramble(int lenght, int seed)
-{
-    std::vector<Move> moves;
-    auto move_distrib = std::uniform_int_distribution<>(0, MoveCount - 1);
-    moves.reserve(lenght);
-    auto random = std::mt19937(seed);
+  for (int i = 0; i < lenght; i++) {
+    Move move;
 
-    for(int i = 0; i < lenght; i++)
-    {
-        Move move;
+    do {
+      move = static_cast<Move>(move_distrib(random));
+    } while (isMoveRedundant(move, moves.begin(), moves.end()));
 
-        do
-        {
-            move = static_cast<Move>(move_distrib(random));
-        }
-        while(isMoveRedundant(move, moves.begin(), moves.end()));
+    moves.push_back(move);
+  }
 
-        moves.push_back(move);
-    }
-
-    return moves;
+  return moves;
 }
