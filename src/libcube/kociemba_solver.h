@@ -7,7 +7,7 @@
 
 class KociembaSolver {
  public:
-  std::vector<Move> solve(CubieCube cube);
+  std::vector<Move> Solve(CubieCube cube);
 
  private:
   Phase1 phase_1_;

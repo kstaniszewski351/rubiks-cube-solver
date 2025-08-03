@@ -10,7 +10,7 @@ class MoveTable {
  public:
   MoveTable(CoordGenerator const* generator);
   MoveTable(CoordGenerator const* generator, const std::vector<Move>& moves);
-  int get(int coord, int move) const;
+  int Get(int coord, int move) const;
 
  private:
   std::vector<int> table_;

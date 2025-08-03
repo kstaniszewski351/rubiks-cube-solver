@@ -20,7 +20,7 @@ struct Phase1Coord {
 class Phase1 {
  public:
   Phase1();
-  std::vector<Move> solve(const CubieCube& cube);
+  std::vector<Move> Solve(const CubieCube& cube);
 
  private:
   const EdgeFlipGenerator flip_gen_;
@@ -34,6 +34,6 @@ class Phase1 {
 
   int IDASearch(std::vector<Phase1Coord>& coord_stack,
                 std::vector<Move>& move_stack, int depth, int bound);
-  int estimateDistanceLeft(Phase1Coord coord);
-  Phase1Coord moveCoord(Phase1Coord coord, Move m);
+  int EstimateDistanceLeft(Phase1Coord coord);
+  Phase1Coord MoveCoord(Phase1Coord coord, Move m);
 };

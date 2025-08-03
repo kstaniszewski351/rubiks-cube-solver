@@ -24,7 +24,7 @@ TEST(SymmetriesTest, AreInversionsCorrect)
     {
         CubieCube solved_cube;
         CubieCube sym = syms->get(i);
-        sym.multiply(syms->getInv(i));
+        sym.Multiply(syms->getInv(i));
 
         EXPECT_EQ(sym, solved_cube);
     }
@@ -38,10 +38,10 @@ TEST(SymmetriesTest, AreFacesSingleColored)
 
         for(int face = 0; face < FaceCount; face++)
         {
-            Face fl0 = cube.facelets[face * FACELET_COUNT];
-            for(int facelet = 0; facelet < FACELET_COUNT; facelet++)
+            Face fl0 = cube.facelets[face * facelet_count];
+            for(int facelet = 0; facelet < facelet_count; facelet++)
             {
-                EXPECT_EQ(fl0, cube.facelets[face * FACELET_COUNT + facelet]);
+                EXPECT_EQ(fl0, cube.facelets[face * facelet_count + facelet]);
             }
         }
     }

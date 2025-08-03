@@ -11,12 +11,12 @@ class Pruning {
           int n_moves = MoveCount);
 
   template <typename Iterator>
-  int getDistance(Iterator begin) const {
-    return table_[indexer_.fromRaw(begin)];
+  int GetDistance(Iterator begin) const {
+    return table_[indexer_.FromRaw(begin)];
   }
 
-  int getSize() const;
-  const std::vector<int>& getDistrib() const;
+  int GetSize() const;
+  const std::vector<int>& GetDistrib() const;
 
  private:
   const MultiIndex indexer_;

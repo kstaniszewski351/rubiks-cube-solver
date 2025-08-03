@@ -28,21 +28,21 @@ enum Move
 };
 
 
-Face getMoveFace(Move move);
-Axis getFaceAxis(Face face);
+Face GetMoveFace(Move move);
+Axis GetFaceAxis(Face face);
 
 template<typename Iterator>
-bool isMoveRedundant(Move move, Iterator sequence_begin, Iterator sequence_end)
+bool IsMoveRedundant(Move move, Iterator sequence_begin, Iterator sequence_end)
 {
     Iterator it = sequence_end - 1;
 
-    const Face face = getMoveFace(move);
-    const Axis axis = getFaceAxis(face);
+    const Face face = GetMoveFace(move);
+    const Axis axis = GetFaceAxis(face);
 
     while(it >= sequence_begin)
     {
-        const Face last_face = getMoveFace(*it);
-        const Axis last_axis = getFaceAxis(last_face);
+        const Face last_face = GetMoveFace(*it);
+        const Axis last_axis = GetFaceAxis(last_face);
 
         if(last_axis != axis)
         {
@@ -59,4 +59,4 @@ bool isMoveRedundant(Move move, Iterator sequence_begin, Iterator sequence_end)
     return false;
 }
 
-std::vector<Move> randomScramble(int lenght, int seed);
+std::vector<Move> RandomScramble(int lenght, int seed);

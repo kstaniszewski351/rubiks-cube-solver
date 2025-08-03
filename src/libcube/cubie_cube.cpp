@@ -5,21 +5,21 @@
 
 #include "face_cube.h"
 
-CubieCube::CubieCube() { reset(); }
+CubieCube::CubieCube() { Reset(); }
 
 CubieCube::CubieCube(const std::array<Edge, EdgeCount>& ep,
                      const std::array<Corner, CornerCount>& cp,
                      const std::array<bool, EdgeCount>& eo,
                      const std::array<int, CornerCount>& co)
-    : edgePerm(ep), cornerPerm(cp), edgeFlip(eo), cornerOri(co) {}
+    : edge_perm(ep), corner_perm(cp), edge_flip(eo), corner_ori(co) {}
 
 CubieCube::CubieCube(const FaceCube& c) {
   for (int i = 0; i < CornerCount; i++) {
     std::array<Face, 3> colors;
 
     for (int j = 0; j < 3; j++) {
-      colors[j] = c.facelets[CORNER_COLORS[i][j] * FACELET_COUNT +
-                             CORNER_POSITIONS[i][j]];
+      colors[j] = c.facelets[corner_colors[i][j] * facelet_count +
+                             corner_positions[i][j]];
     }
 
     int r;
@@ -27,7 +27,7 @@ CubieCube::CubieCube(const FaceCube& c) {
 
     for (r = 0; r < 6; r++) {
       for (j = 0; j < CornerCount; j++) {
-        if (std::ranges::equal(CORNER_COLORS[j], colors)) {
+        if (std::ranges::equal(corner_colors[j], colors)) {
           break;
         }
       }
@@ -47,8 +47,8 @@ CubieCube::CubieCube(const FaceCube& c) {
       }
     }
 
-    cornerPerm[i] = static_cast<Corner>(j);
-    cornerOri[i] = r;
+    corner_perm[i] = static_cast<Corner>(j);
+    corner_ori[i] = r;
   }
 
   for (int i = 0; i < EdgeCount; i++) {
@@ -56,7 +56,7 @@ CubieCube::CubieCube(const FaceCube& c) {
 
     for (int j = 0; j < 2; j++) {
       colors[j] =
-          c.facelets[EDGE_COLORS[i][j] * FACELET_COUNT + EDGE_POSITIONS[i][j]];
+          c.facelets[edge_colors[i][j] * facelet_count + edge_positions[i][j]];
     }
 
     int r;
@@ -64,7 +64,7 @@ CubieCube::CubieCube(const FaceCube& c) {
 
     for (r = 0; r < 2; r++) {
       for (j = 0; j < EdgeCount; j++) {
-        if (std::ranges::equal(EDGE_COLORS[j], colors)) {
+        if (std::ranges::equal(edge_colors[j], colors)) {
           break;
         }
       }
@@ -76,39 +76,39 @@ CubieCube::CubieCube(const FaceCube& c) {
       std::ranges::rotate(colors, colors.end() - 1);
     }
 
-    edgePerm[i] = static_cast<Edge>(j);
-    edgeFlip[i] = r;
+    edge_perm[i] = static_cast<Edge>(j);
+    edge_flip[i] = r;
   }
 }
 
 bool CubieCube::operator==(const CubieCube& c) const {
-  return edgePerm == c.edgePerm && cornerPerm == c.cornerPerm &&
-         edgeFlip == c.edgeFlip && cornerOri == c.cornerOri;
+  return edge_perm == c.edge_perm && corner_perm == c.corner_perm &&
+         edge_flip == c.edge_flip && corner_ori == c.corner_ori;
 }
 
 bool CubieCube::operator!=(const CubieCube& c) const { return !operator==(c); }
 
-void CubieCube::reset() {
+void CubieCube::Reset() {
   for (int i = 0; i < CornerCount; i++) {
-    cornerPerm[i] = static_cast<Corner>(i);
-    cornerOri[i] = 0;
+    corner_perm[i] = static_cast<Corner>(i);
+    corner_ori[i] = 0;
   }
 
   for (int i = 0; i < EdgeCount; i++) {
-    edgePerm[i] = static_cast<Edge>(i);
-    edgeFlip[i] = 0;
+    edge_perm[i] = static_cast<Edge>(i);
+    edge_flip[i] = 0;
   }
 }
 
-bool CubieCube::isSolved() const {
+bool CubieCube::IsSolved() const {
   for (int i = 0; i < CornerCount; i++) {
-    if (cornerPerm[i] != i | cornerOri[i] != 0) {
+    if (corner_perm[i] != i | corner_ori[i] != 0) {
       return false;
     }
   }
 
   for (int i = 0; i < EdgeCount; i++) {
-    if (edgePerm[i] != i | edgeFlip[i] != 0) {
+    if (edge_perm[i] != i | edge_flip[i] != 0) {
       return false;
     }
   }
@@ -116,7 +116,7 @@ bool CubieCube::isSolved() const {
   return true;
 }
 
-void CubieCube::move(Move move) {
+void CubieCube::Move(enum Move move) {
   int face = static_cast<Face>(move / 3);
   int n_rotations = (move % 3) + 1;
 
@@ -125,20 +125,20 @@ void CubieCube::move(Move move) {
   std::array<bool, 4> eo;
   std::array<int, 4> co;
   for (int i = 0; i < 4; i++) {
-    ep[i] = edgePerm[FACE_EDGES[face][i]];
-    cp[i] = cornerPerm[FACE_CORNERS[face][i]];
-    eo[i] = edgeFlip[FACE_EDGES[face][i]];
-    co[i] = cornerOri[FACE_CORNERS[face][i]];
+    ep[i] = edge_perm[face_edges[face][i]];
+    cp[i] = corner_perm[face_corners[face][i]];
+    eo[i] = edge_flip[face_edges[face][i]];
+    co[i] = corner_ori[face_corners[face][i]];
   }
 
   int mod = 4 - (n_rotations % 4);
 
   for (int i = 0; i < 4; i++) {
     int j = (mod + i) % 4;
-    edgePerm[FACE_EDGES[face][i]] = ep[j];
-    cornerPerm[FACE_CORNERS[face][i]] = cp[j];
-    edgeFlip[FACE_EDGES[face][i]] = eo[j];
-    cornerOri[FACE_CORNERS[face][i]] = co[j];
+    edge_perm[face_edges[face][i]] = ep[j];
+    corner_perm[face_corners[face][i]] = cp[j];
+    edge_flip[face_edges[face][i]] = eo[j];
+    corner_ori[face_corners[face][i]] = co[j];
   }
 
   if (n_rotations % 2 == 0) {
@@ -147,69 +147,69 @@ void CubieCube::move(Move move) {
 
   switch (face) {
     case Right:
-      updateCorner(URF, 1);
-      updateCorner(UBR, 2);
-      updateCorner(DRB, 1);
-      updateCorner(DFR, 2);
+      UpdateCorner(URF, 1);
+      UpdateCorner(UBR, 2);
+      UpdateCorner(DRB, 1);
+      UpdateCorner(DFR, 2);
       break;
     case Left:
-      updateCorner(UFL, 2);
-      updateCorner(ULB, 1);
-      updateCorner(DBL, 2);
-      updateCorner(DLF, 1);
+      UpdateCorner(UFL, 2);
+      UpdateCorner(ULB, 1);
+      UpdateCorner(DBL, 2);
+      UpdateCorner(DLF, 1);
       break;
     case Front:
-      edgeFlip[UF] = !edgeFlip[UF];
-      edgeFlip[FR] = !edgeFlip[FR];
-      edgeFlip[FL] = !edgeFlip[FL];
-      edgeFlip[DF] = !edgeFlip[DF];
-      updateCorner(URF, 2);
-      updateCorner(DFR, 1);
-      updateCorner(DLF, 2);
-      updateCorner(UFL, 1);
+      edge_flip[UF] = !edge_flip[UF];
+      edge_flip[FR] = !edge_flip[FR];
+      edge_flip[FL] = !edge_flip[FL];
+      edge_flip[DF] = !edge_flip[DF];
+      UpdateCorner(URF, 2);
+      UpdateCorner(DFR, 1);
+      UpdateCorner(DLF, 2);
+      UpdateCorner(UFL, 1);
       break;
     case Back:
-      edgeFlip[UB] = !edgeFlip[UB];
-      edgeFlip[BR] = !edgeFlip[BR];
-      edgeFlip[BL] = !edgeFlip[BL];
-      edgeFlip[DB] = !edgeFlip[DB];
+      edge_flip[UB] = !edge_flip[UB];
+      edge_flip[BR] = !edge_flip[BR];
+      edge_flip[BL] = !edge_flip[BL];
+      edge_flip[DB] = !edge_flip[DB];
 
-      updateCorner(UBR, 1);
-      updateCorner(DRB, 2);
-      updateCorner(DBL, 1);
-      updateCorner(ULB, 2);
+      UpdateCorner(UBR, 1);
+      UpdateCorner(DRB, 2);
+      UpdateCorner(DBL, 1);
+      UpdateCorner(ULB, 2);
       break;
   }
 }
 
-void CubieCube::updateCorner(Corner c, int amount) {
-  cornerOri[c] = (cornerOri[c] + amount) % 3;
+void CubieCube::UpdateCorner(Corner c, int amount) {
+  corner_ori[c] = (corner_ori[c] + amount) % 3;
 }
 
-void CubieCube::multiplyEdges(const CubieCube& cube) {
+void CubieCube::MultiplyEdges(const CubieCube& cube) {
   std::array<Edge, EdgeCount> ep;
   std::array<bool, EdgeCount> eo;
 
   for (int i = 0; i < EdgeCount; i++) {
-    ep[i] = edgePerm[cube.edgePerm[i]];
+    ep[i] = edge_perm[cube.edge_perm[i]];
 
-    eo[i] = (cube.edgeFlip[i] + edgeFlip[cube.edgePerm[i]]) % 2;
+    eo[i] = (cube.edge_flip[i] + edge_flip[cube.edge_perm[i]]) % 2;
   }
 
-  edgePerm = ep;
-  edgeFlip = eo;
+  edge_perm = ep;
+  edge_flip = eo;
 }
 
-void CubieCube::multiplyCorners(const CubieCube& cube) {
+void CubieCube::MultiplyCorners(const CubieCube& cube) {
   std::array<Corner, CornerCount> cp;
   std::array<int, CornerCount> co;
 
   for (int i = 0; i < CornerCount; i++) {
-    cp[i] = cornerPerm[cube.cornerPerm[i]];
+    cp[i] = corner_perm[cube.corner_perm[i]];
 
     int ori = 0;
-    int a = cornerOri[cube.cornerPerm[i]];
-    int b = cube.cornerOri[i];
+    int a = corner_ori[cube.corner_perm[i]];
+    int b = cube.corner_ori[i];
     // both are regular, ori < 3
     if (a < 3 && b < 3) {
       ori = a + b;
@@ -242,13 +242,13 @@ void CubieCube::multiplyCorners(const CubieCube& cube) {
     co[i] = ori;
   }
 
-  cornerPerm = cp;
-  cornerOri = co;
+  corner_perm = cp;
+  corner_ori = co;
 }
 
-void CubieCube::multiply(const CubieCube& cube) {
-  multiplyCorners(cube);
-  multiplyEdges(cube);
+void CubieCube::Multiply(const CubieCube& cube) {
+  MultiplyCorners(cube);
+  MultiplyEdges(cube);
 }
 
 constexpr std::array<int, FaceCount> face_string_index{42, 48, 3, 81, 45, 39};
@@ -273,12 +273,12 @@ std::ostream& operator<<(std::ostream& os, const CubieCube& cube) {
       int y = i / 3;
 
       Face c;
-      if (i == CENTER) {
+      if (i == center_facelet) {
         c = static_cast<Face>(f);
-      } else if (i > CENTER) {
-        c = f_cube.facelets[f * FACELET_COUNT + i - 1];
+      } else if (i > center_facelet) {
+        c = f_cube.facelets[f * facelet_count + i - 1];
       } else {
-        c = f_cube.facelets[f * FACELET_COUNT + i];
+        c = f_cube.facelets[f * facelet_count + i];
       }
 
       s.at(si + x + y * n_columns) = face_names[c];

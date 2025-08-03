@@ -14,4 +14,4 @@ MultiIndex::MultiIndex(std::vector<int> max_indexes)
     : max_indexes_(std::move(max_indexes)),
       max_index_(calculateMaxIndex(max_indexes_)) {}
 
-int MultiIndex::getMaxIndex() const { return max_index_; }
+int MultiIndex::GetMaxIndex() const { return max_index_; }

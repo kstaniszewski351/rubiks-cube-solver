@@ -1,13 +1,13 @@
 #include "kociemba_solver.h"
 
-std::vector<Move> KociembaSolver::solve(CubieCube cube) {
-  auto phase_1_solution = phase_1_.solve(cube);
+std::vector<Move> KociembaSolver::Solve(CubieCube cube) {
+  auto phase_1_solution = phase_1_.Solve(cube);
 
   for (Move m : phase_1_solution) {
-    cube.move(m);
+    cube.Move(m);
   }
 
-  auto phase_2_solution = phase_2_.solve(cube);
+  auto phase_2_solution = phase_2_.Solve(cube);
 
   std::vector<Move> solution;
   solution.reserve(phase_1_solution.size() + phase_2_solution.size());

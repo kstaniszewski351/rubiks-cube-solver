@@ -17,11 +17,11 @@ Phase2::Phase2()
                                     {&ud_perm_gen_, &ud_slice_perm_gen_},
                                     phase_2_moves.size()) {}
 
-std::vector<Move> Phase2::solve(const CubieCube& cube) {
+std::vector<Move> Phase2::Solve(const CubieCube& cube) {
   Phase2Coord coord;
-  coord.corner_perm = corner_perm_gen_.getCoord(cube);
-  coord.ud_perm = ud_perm_gen_.getCoord(cube);
-  coord.ud_slice_perm = ud_slice_perm_gen_.getCoord(cube);
+  coord.corner_perm = corner_perm_gen_.GetCoord(cube);
+  coord.ud_perm = ud_perm_gen_.GetCoord(cube);
+  coord.ud_slice_perm = ud_slice_perm_gen_.GetCoord(cube);
 
   std::vector<Phase2Coord> coord_stack;
   std::vector<Move> move_stack;
@@ -29,7 +29,7 @@ std::vector<Move> Phase2::solve(const CubieCube& cube) {
   coord_stack.reserve(phase_2_max_depth);
   move_stack.reserve(phase_2_max_depth - 1);
 
-  int bound = estimateDistanceLeft(coord);
+  int bound = EstimateDistanceLeft(coord);
   coord_stack.push_back(coord);
 
   while (true) {
@@ -46,7 +46,7 @@ std::vector<Move> Phase2::solve(const CubieCube& cube) {
 int Phase2::IDASearch(std::vector<Phase2Coord>& coord_stack,
                       std::vector<Move>& move_stack, int depth, int bound) {
   const Phase2Coord coord = coord_stack.back();
-  const int distance_left = estimateDistanceLeft(coord);
+  const int distance_left = EstimateDistanceLeft(coord);
   const int total_distance = depth + distance_left;
 
   if (total_distance > bound) {
@@ -61,11 +61,11 @@ int Phase2::IDASearch(std::vector<Phase2Coord>& coord_stack,
   for (int move_index = 0; move_index < phase_2_moves.size(); move_index++) {
     Move move = phase_2_moves[move_index];
 
-    if (isMoveRedundant(move, move_stack.begin(), move_stack.end())) {
+    if (IsMoveRedundant(move, move_stack.begin(), move_stack.end())) {
       continue;
     }
 
-    Phase2Coord new_coord = moveCoord(coord, move_index);
+    Phase2Coord new_coord = MoveCoord(coord, move_index);
     coord_stack.push_back(new_coord);
     move_stack.push_back(move);
 
@@ -85,30 +85,30 @@ int Phase2::IDASearch(std::vector<Phase2Coord>& coord_stack,
   return min_distance;
 };
 
-int Phase2::estimateDistanceLeft(Phase2Coord coord) {
+int Phase2::EstimateDistanceLeft(Phase2Coord coord) {
   const std::array<int, 2> corner_perm_ud_slice_perm_buff = {
       coord.corner_perm, coord.ud_slice_perm};
   const std::array<int, 2> ud_perm_ud_slice_perm_buff = {coord.ud_perm,
                                                          coord.ud_slice_perm};
 
   const int corner_perm_ud_slice_perm_distance =
-      corner_perm_ud_slice_perm_pruning.getDistance(
+      corner_perm_ud_slice_perm_pruning.GetDistance(
           corner_perm_ud_slice_perm_buff.begin());
   const int ud_perm_ud_slice_perm_distance =
-      ud_perm_ud_slice_perm_pruning.getDistance(
+      ud_perm_ud_slice_perm_pruning.GetDistance(
           ud_perm_ud_slice_perm_buff.begin());
 
   return std::max(corner_perm_ud_slice_perm_distance,
                   ud_perm_ud_slice_perm_distance);
 }
 
-Phase2Coord Phase2::moveCoord(Phase2Coord coord, int move_index) {
+Phase2Coord Phase2::MoveCoord(Phase2Coord coord, int move_index) {
   Phase2Coord new_coord;
 
-  new_coord.corner_perm = corner_perm_moves_.get(coord.corner_perm, move_index);
-  new_coord.ud_perm = ud_perm_moves_.get(coord.ud_perm, move_index);
+  new_coord.corner_perm = corner_perm_moves_.Get(coord.corner_perm, move_index);
+  new_coord.ud_perm = ud_perm_moves_.Get(coord.ud_perm, move_index);
   new_coord.ud_slice_perm =
-      ud_slice_perm_moves_.get(coord.ud_slice_perm, move_index);
+      ud_slice_perm_moves_.Get(coord.ud_slice_perm, move_index);
 
   return new_coord;
 }

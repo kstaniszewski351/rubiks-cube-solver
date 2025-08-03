@@ -5,7 +5,7 @@
 
 class CubieCube;
 
-constexpr std::array<std::array<int, 2>, EdgeCount> EDGE_POSITIONS = {
+constexpr std::array<std::array<int, 2>, EdgeCount> edge_positions = {
     {{{1, 6}},
      {{6, 1}},
      {{3, 4}},
@@ -20,7 +20,7 @@ constexpr std::array<std::array<int, 2>, EdgeCount> EDGE_POSITIONS = {
      {{6, 3}}}};
 
 // the indexes are arranged in clockwise order, the first being on U or D face
-constexpr std::array<std::array<int, 3>, CornerCount> CORNER_POSITIONS = {
+constexpr std::array<std::array<int, 3>, CornerCount> corner_positions = {
     {{{2, 7, 0}},
      {{7, 5, 2}},
      {{0, 2, 5}},
@@ -30,15 +30,16 @@ constexpr std::array<std::array<int, 3>, CornerCount> CORNER_POSITIONS = {
      {{2, 0, 0}},
      {{7, 5, 5}}}};
 
-constexpr int CENTER = 4;
-constexpr int FACELET_COUNT = 8;
+constexpr int center_facelet = 4;
+constexpr int facelet_count = 8;
 
-class FaceCube {
+struct FaceCube {
  public:
   FaceCube();
   FaceCube(const CubieCube& cube);
-  void move(Move m);
-  void reset();
-  std::array<Face, FACELET_COUNT * FaceCount> facelets;
-  bool isValid();
+  void Move(Move m);
+  void Reset();
+  bool IsValid();
+
+  std::array<Face, facelet_count * FaceCount> facelets;
 };

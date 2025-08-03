@@ -18,7 +18,7 @@ struct Phase2Coord {
 class Phase2 {
  public:
   Phase2();
-  std::vector<Move> solve(const CubieCube& cube);
+  std::vector<Move> Solve(const CubieCube& cube);
 
  private:
   const CornerPermGenerator corner_perm_gen_;
@@ -32,6 +32,6 @@ class Phase2 {
 
   int IDASearch(std::vector<Phase2Coord>& coord_stack,
                 std::vector<Move>& move_stack, int depth, int bound);
-  int estimateDistanceLeft(Phase2Coord coord);
-  Phase2Coord moveCoord(Phase2Coord coord, int move);
+  int EstimateDistanceLeft(Phase2Coord coord);
+  Phase2Coord MoveCoord(Phase2Coord coord, int move);
 };

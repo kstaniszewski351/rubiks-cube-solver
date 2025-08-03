@@ -7,7 +7,7 @@ class MultiIndex {
   MultiIndex(std::vector<int> max_indexes);
 
   template <typename Iterator>
-  int fromRaw(Iterator begin) const {
+  int FromRaw(Iterator begin) const {
     int multi_index = 0;
 
     for (int max_index : max_indexes_) {
@@ -20,7 +20,7 @@ class MultiIndex {
   }
 
   template <typename Iterator>
-  void toRaw(int multi_index, Iterator end) const {
+  void ToRaw(int multi_index, Iterator end) const {
     --end;
 
     for (int max_index : std::ranges::reverse_view(max_indexes_)) {
@@ -32,7 +32,7 @@ class MultiIndex {
     }
   }
 
-  int getMaxIndex() const;
+  int GetMaxIndex() const;
 
  private:
   const std::vector<int> max_indexes_;

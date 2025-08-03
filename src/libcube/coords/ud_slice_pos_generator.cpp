@@ -2,13 +2,13 @@
 
 constexpr int ud_slice_start = 8;
 
-int UDSlicePosGenerator::getCoord(const CubieCube& cube) const {
-  return combinationEncode(cube.edgePerm,
+int UDSlicePosGenerator::GetCoord(const CubieCube& cube) const {
+  return CombinationEncode(cube.edge_perm,
                            [](Edge e) { return e >= ud_slice_start; });
 }
 
-void UDSlicePosGenerator::invertCoord(int coord, CubieCube& cube) const {
-  auto combination = combinationDecode<12>(coord, 4);
+void UDSlicePosGenerator::InvertCoord(int coord, CubieCube& cube) const {
+  auto combination = CombinationDecode<12>(coord, 4);
   std::array<Edge, EdgeCount> edge_perm;
 
   int index = 0;
@@ -23,6 +23,6 @@ void UDSlicePosGenerator::invertCoord(int coord, CubieCube& cube) const {
       index++;
     }
   }
-  cube.edgePerm = edge_perm;
+  cube.edge_perm = edge_perm;
 }
-int UDSlicePosGenerator::getMaxCoord() const { return n_coords_; }
+int UDSlicePosGenerator::GetMaxCoord() const { return n_coords_; }

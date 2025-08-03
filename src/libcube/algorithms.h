@@ -1,12 +1,11 @@
 #pragma once
 #include <array>
-#include <concepts>
 
 // encodes values of elements in an array of lenght N
 // as a coordinate ranging from 0 to base^(N-1)
 // doesnt encode position of element at index 0
 template <typename Iterator>
-int baseNEncode(int base, Iterator begin, Iterator end) {
+int BaseNEncode(int base, Iterator begin, Iterator end) {
   int coord = 0;
 
   while (begin < end) {
@@ -18,7 +17,7 @@ int baseNEncode(int base, Iterator begin, Iterator end) {
 }
 
 template <typename Iterator>
-void baseNDecode(int coord, int base, Iterator begin, Iterator end) {
+void BaseNDecode(int coord, int base, Iterator begin, Iterator end) {
   end--;
 
   while (end >= begin) {
@@ -31,8 +30,7 @@ void baseNDecode(int coord, int base, Iterator begin, Iterator end) {
 }
 
 template <typename T>
-  requires std::integral<T>
-constexpr T factorial(T value) {
+constexpr T Factorial(T value) {
   T result = 1;
 
   for (T i = 2; i <= value; ++i) {
@@ -46,7 +44,7 @@ constexpr T factorial(T value) {
 // with values ranging from 0 to N - 1
 // as a coordinate that ranges from 0 to N! - 1
 template <typename Iterator>
-int lehmerEncode(Iterator begin, Iterator end) {
+int LehmerEncode(Iterator begin, Iterator end) {
   int coord = 0;
   Iterator i = end - 1;
   int factorial = 1;
@@ -80,7 +78,7 @@ int lehmerEncode(Iterator begin, Iterator end) {
 // ranging from 0 to N - 1
 // works with integral types and enums
 template <typename T, typename Iterator>
-void lehmerDecode(int coord, int lenght, Iterator end) {
+void LehmerDecode(int coord, int lenght, Iterator end) {
   Iterator it = end - 1;
   for (int max_digit = 1; max_digit <= lenght; max_digit++) {
     // decode factoradic
@@ -103,8 +101,7 @@ void lehmerDecode(int coord, int lenght, Iterator end) {
 // calculate binomial coefficient using
 // multiplicative formula
 template <typename T>
-  requires std::integral<T>
-constexpr T biCoeff(T n, T k) {
+constexpr T BiCoeff(T n, T k) {
   T result = 1;
   for (T i = 1; i <= k; i++) {
     result = (result * (n + 1 - i)) / i;
@@ -118,7 +115,7 @@ constexpr T biCoeff(T n, T k) {
 // which meet toEncode
 // doesnt preserve order
 template <typename T, std::size_t N, typename F>
-int combinationEncode(const std::array<T, N>& array, F&& predicate) {
+int CombinationEncode(const std::array<T, N>& array, F&& predicate) {
   int result = 0;
 
   int occupied = -1;
@@ -126,7 +123,7 @@ int combinationEncode(const std::array<T, N>& array, F&& predicate) {
     if (predicate(array[i])) {
       occupied++;
     } else if (occupied >= 0) {
-      result += biCoeff(i, occupied);
+      result += BiCoeff(i, occupied);
     }
   }
 
@@ -134,14 +131,14 @@ int combinationEncode(const std::array<T, N>& array, F&& predicate) {
 }
 
 template <std::size_t N>
-std::array<bool, N> combinationDecode(int coord, int n_true) {
+std::array<bool, N> CombinationDecode(int coord, int n_true) {
   int k = n_true - 1;
   int n = N - 1;
 
   std::array<bool, N> result{};
 
   while (k >= 0) {
-    int c = biCoeff(n, k);
+    int c = BiCoeff(n, k);
 
     if (coord < c) {
       result[n] = true;
@@ -156,7 +153,7 @@ std::array<bool, N> combinationDecode(int coord, int n_true) {
 }
 
 template <typename T>
-constexpr T power(T base, T exp) {
+constexpr T Power(T base, T exp) {
   int result = 1;
   for (int i = 0; i < exp; ++i) {
     result *= base;

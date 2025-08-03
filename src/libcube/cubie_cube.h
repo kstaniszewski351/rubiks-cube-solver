@@ -9,7 +9,7 @@
 
 class FaceCube;
 
-constexpr std::array<std::array<Face, 2>, EdgeCount> EDGE_COLORS = {{
+constexpr std::array<std::array<Face, 2>, EdgeCount> edge_colors = {{
     {Up, Right},
     {Up, Left},
     {Up, Back},
@@ -24,7 +24,7 @@ constexpr std::array<std::array<Face, 2>, EdgeCount> EDGE_COLORS = {{
     {Back, Left},
 }};
 
-constexpr std::array<std::array<Face, 3>, CornerCount> CORNER_COLORS = {
+constexpr std::array<std::array<Face, 3>, CornerCount> corner_colors = {
     {{{Up, Right, Front}},
      {{Up, Front, Left}},
      {{Up, Back, Right}},
@@ -34,7 +34,7 @@ constexpr std::array<std::array<Face, 3>, CornerCount> CORNER_COLORS = {
      {{Down, Right, Back}},
      {{Down, Back, Left}}}};
 
-constexpr std::array<std::array<Corner, 4>, 6> FACE_CORNERS = {{
+constexpr std::array<std::array<Corner, 4>, 6> face_corners = {{
     {ULB, UBR, URF, UFL},
     {DLF, DFR, DRB, DBL},
     {URF, UBR, DRB, DFR},
@@ -43,7 +43,7 @@ constexpr std::array<std::array<Corner, 4>, 6> FACE_CORNERS = {{
     {UBR, ULB, DBL, DRB},
 }};
 
-constexpr std::array<std::array<Edge, 4>, 6> FACE_EDGES = {{
+constexpr std::array<std::array<Edge, 4>, 6> face_edges = {{
     {UB, UR, UF, UL},
     {DF, DR, DB, DL},
     {UR, BR, DR, FR},
@@ -52,12 +52,12 @@ constexpr std::array<std::array<Edge, 4>, 6> FACE_EDGES = {{
     {UB, BL, DB, BR},
 }};
 
-class CubieCube {
+struct CubieCube {
  public:
-  std::array<Edge, EdgeCount> edgePerm;
-  std::array<Corner, CornerCount> cornerPerm;
-  std::array<bool, EdgeCount> edgeFlip;
-  std::array<int, CornerCount> cornerOri;
+  std::array<Edge, EdgeCount> edge_perm;
+  std::array<Corner, CornerCount> corner_perm;
+  std::array<bool, EdgeCount> edge_flip;
+  std::array<int, CornerCount> corner_ori;
 
   CubieCube();
   CubieCube(const FaceCube& c);
@@ -71,14 +71,13 @@ class CubieCube {
 
   friend std::ostream& operator<<(std::ostream& os, const CubieCube& cube);
 
-  void move(Move m);
-  void move(int m);
-  void reset();
-  bool isSolved() const;
-  void multiplyCorners(const CubieCube& cube);
-  void multiplyEdges(const CubieCube& cube);
-  void multiply(const CubieCube& cube);
+  void Move(Move m);
+  void Reset();
+  bool IsSolved() const;
+  void MultiplyCorners(const CubieCube& cube);
+  void MultiplyEdges(const CubieCube& cube);
+  void Multiply(const CubieCube& cube);
 
  private:
-  void updateCorner(Corner c, int amount);
+  void UpdateCorner(Corner c, int amount);
 };

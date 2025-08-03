@@ -58,7 +58,7 @@ UI::UI() : screen_(ScreenInteractive::Fullscreen())
         for(Move move : moves)
         {
             scramble_.push_back(move);
-            cube_.move(move);
+            cube_.Move(move);
         }
 
         face_cube_ = FaceCube(cube_);
@@ -69,7 +69,7 @@ UI::UI() : screen_(ScreenInteractive::Fullscreen())
     auto reset_button = Button(&reset_button_label, [&]
     {
         scramble_.clear();
-        cube_.reset();
+        cube_.Reset();
     });
 
     std::string scramble_move_count = "30";
@@ -107,7 +107,7 @@ UI::UI() : screen_(ScreenInteractive::Fullscreen())
             auto move = Move(static_cast<Move>(face * 3 + rotation));
 
             scramble_.push_back(move);
-            cube_.move(move);
+            cube_.Move(move);
         }
 
         face_cube_ = FaceCube(cube_);
@@ -130,30 +130,30 @@ UI::UI() : screen_(ScreenInteractive::Fullscreen())
         std::string edge_ori;
         std::string corner_ori;
 
-        for(Edge i: cube_.edgePerm)
+        for(Edge i: cube_.edge_perm)
         {
-            for(Face c: EDGE_COLORS[i])
+            for(Face c: edge_colors[i])
             {
                 edge_perm += FACE_NAMES[c];
             }
             edge_perm += " ";
         }
 
-        for(Corner i: cube_.cornerPerm)
+        for(Corner i: cube_.corner_perm)
         {
-            for(Face c: CORNER_COLORS[i])
+            for(Face c: corner_colors[i])
             {
                 corner_perm += FACE_NAMES[c];
             }
             corner_perm += " ";
         }
 
-        for(int i: cube_.edgeFlip)
+        for(int i: cube_.edge_flip)
         {
             edge_ori += std::to_string(i) + " ";
         }
 
-        for(int i: cube_.cornerOri)
+        for(int i: cube_.corner_ori)
         {
             corner_ori += std::to_string(i) + " ";
         }

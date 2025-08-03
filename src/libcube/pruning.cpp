@@ -8,7 +8,7 @@ std::vector<int> getMaxCoords(
   result.reserve(generators.size());
 
   for (auto generator : generators) {
-    result.push_back(generator->getMaxCoord());
+    result.push_back(generator->GetMaxCoord());
   }
 
   return result;
@@ -16,7 +16,7 @@ std::vector<int> getMaxCoords(
 
 Pruning::Pruning(std::vector<MoveTable const*> move_tables,
                  std::vector<CoordGenerator const*> generators, int n_moves)
-    : indexer_(getMaxCoords(generators)), table_(indexer_.getMaxIndex(), -1) {
+    : indexer_(getMaxCoords(generators)), table_(indexer_.GetMaxIndex(), -1) {
   auto coord_buffer = std::vector<int>(move_tables.size(), 0);
   int n_set = 0;
   int iter = 0;
@@ -26,18 +26,18 @@ Pruning::Pruning(std::vector<MoveTable const*> move_tables,
   iter++;
   distrib_.push_back(1);
 
-  while (n_set < indexer_.getMaxIndex()) {
+  while (n_set < indexer_.GetMaxIndex()) {
     int n_set_this_iter = 0;
-    for (int index = 0; index < indexer_.getMaxIndex(); index++) {
+    for (int index = 0; index < indexer_.GetMaxIndex(); index++) {
       if (table_[index] == iter - 1) {
-        indexer_.toRaw(index, coord_buffer.end());
+        indexer_.ToRaw(index, coord_buffer.end());
 
         for (int move = 0; move < n_moves; move++) {
           for (int i = 0; i < coord_buffer.size(); i++) {
-            coord_buffer[i] = move_tables[i]->get(coord_buffer[i], move);
+            coord_buffer[i] = move_tables[i]->Get(coord_buffer[i], move);
           }
 
-          const int new_coord = indexer_.fromRaw(coord_buffer.begin());
+          const int new_coord = indexer_.FromRaw(coord_buffer.begin());
 
           if (table_[new_coord] == -1) {
             table_[new_coord] = iter;
@@ -53,6 +53,6 @@ Pruning::Pruning(std::vector<MoveTable const*> move_tables,
   distrib_.shrink_to_fit();
 }
 
-const std::vector<int>& Pruning::getDistrib() const { return distrib_; }
+const std::vector<int>& Pruning::GetDistrib() const { return distrib_; }
 
-int Pruning::getSize() const { return indexer_.getMaxIndex(); }
+int Pruning::GetSize() const { return indexer_.GetMaxIndex(); }

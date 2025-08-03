@@ -2,17 +2,17 @@
 
 constexpr int ud_slice_start = 8;
 
-int UDSlicePermGenerator::getCoord(const CubieCube& cube) const {
-  return lehmerEncode(cube.edgePerm.begin() + ud_slice_start,
-                      cube.edgePerm.end());
+int UDSlicePermGenerator::GetCoord(const CubieCube& cube) const {
+  return LehmerEncode(cube.edge_perm.begin() + ud_slice_start,
+                      cube.edge_perm.end());
 }
 
-void UDSlicePermGenerator::invertCoord(int coord, CubieCube& cube) const {
-  lehmerDecode<Edge>(coord, 4, cube.edgePerm.end());
+void UDSlicePermGenerator::InvertCoord(int coord, CubieCube& cube) const {
+  LehmerDecode<Edge>(coord, 4, cube.edge_perm.end());
 
   for (int i = ud_slice_start; i < EdgeCount; i++) {
-    cube.edgePerm[i] =
-        static_cast<Edge>(static_cast<int>(cube.edgePerm[i]) + ud_slice_start);
+    cube.edge_perm[i] =
+        static_cast<Edge>(static_cast<int>(cube.edge_perm[i]) + ud_slice_start);
   }
 }
-int UDSlicePermGenerator::getMaxCoord() const { return n_coords_; }
+int UDSlicePermGenerator::GetMaxCoord() const { return n_coords_; }

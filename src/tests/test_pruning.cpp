@@ -17,7 +17,7 @@
 
 void printPruning(const Pruning& pruning)
 {
-    std::cout << "size: " << pruning.getSize() << "\n";
+    std::cout << "size: " << pruning.GetSize() << "\n";
     std::cout << "distrib: \n";
     for(int i : pruning.getDistrib())
     {

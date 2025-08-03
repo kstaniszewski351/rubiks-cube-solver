@@ -11,5 +11,5 @@ int main()
     std::cin >> n;
     std::cin >> k;
 
-    std::cout << biCoeff(n, k) << "\n";
+    std::cout << BiCoeff(n, k) << "\n";
 }

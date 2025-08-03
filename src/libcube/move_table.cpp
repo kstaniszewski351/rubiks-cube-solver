@@ -4,34 +4,34 @@
 #include "move.h"
 
 MoveTable::MoveTable(CoordGenerator const* generator)
-    : table_(generator->getMaxCoord() * MoveCount), n_moves_(MoveCount) {
+    : table_(generator->GetMaxCoord() * MoveCount), n_moves_(MoveCount) {
   CubieCube c;
-  for (int coord = 0; coord < generator->getMaxCoord(); ++coord) {
+  for (int coord = 0; coord < generator->GetMaxCoord(); ++coord) {
     for (int move = 0; move < MoveCount; move++) {
-      generator->invertCoord(coord, c);
-      c.move(static_cast<Move>(move));
-      table_[coord * MoveCount + move] = generator->getCoord(c);
+      generator->InvertCoord(coord, c);
+      c.Move(static_cast<Move>(move));
+      table_[coord * MoveCount + move] = generator->GetCoord(c);
     }
   }
 }
 
 MoveTable::MoveTable(CoordGenerator const* generator,
                      const std::vector<Move>& moves)
-    : table_(generator->getMaxCoord() * moves.size()), n_moves_(moves.size()) {
+    : table_(generator->GetMaxCoord() * moves.size()), n_moves_(moves.size()) {
   const int n_moves_ = moves.size();
 
   CubieCube c;
-  for (int coord = 0; coord < generator->getMaxCoord(); ++coord) {
+  for (int coord = 0; coord < generator->GetMaxCoord(); ++coord) {
     for (int move_index = 0; move_index < n_moves_; ++move_index) {
-      generator->invertCoord(coord, c);
+      generator->InvertCoord(coord, c);
 
-      c.move(moves[move_index]);
+      c.Move(moves[move_index]);
 
-      table_[coord * n_moves_ + move_index] = generator->getCoord(c);
+      table_[coord * n_moves_ + move_index] = generator->GetCoord(c);
     }
   }
 }
 
-int MoveTable::get(int coord, int move) const {
+int MoveTable::Get(int coord, int move) const {
   return table_[coord * n_moves_ + move];
 };

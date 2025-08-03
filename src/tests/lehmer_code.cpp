@@ -21,11 +21,11 @@ int main()
         perm[i] = std::stoi(input);
     }
 
-    int code = lehmerEncode(perm.begin(), perm.end());
+    int code = LehmerEncode(perm.begin(), perm.end());
 
     std::cout << "code: " << code << "\n";
 
-    lehmerDecode<int>(code, 6, perm.end());
+    LehmerDecode<int>(code, 6, perm.end());
 
     for(int i : perm)
     {

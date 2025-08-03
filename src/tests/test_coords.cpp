@@ -31,13 +31,13 @@ TEST_P(CoordTest, AreInversionsEqual)
 {
     CoordGenerator* generator = GetParam();
 
-    int count = generator->getMaxCoord();
+    int count = generator->GetMaxCoord();
     for(int i = 0; i < count; i++)
     {
         CubieCube cube;
-        generator->invertCoord(i, cube);
+        generator->InvertCoord(i, cube);
 
-        int coord = generator->getCoord(cube);
+        int coord = generator->GetCoord(cube);
 
         EXPECT_EQ(i, coord);
     }
@@ -49,7 +49,7 @@ TEST_P(CoordTest, IsZeroWhenSolved)
 
     CubieCube cube;
 
-    int coord = generator->getCoord(cube);
+    int coord = generator->GetCoord(cube);
 
     EXPECT_EQ(coord, 0);
 }
@@ -60,15 +60,15 @@ TEST_P(CoordTest, AreMoveTablesCorrect)
 
     auto table = MoveTable(generator);
 
-    for(int coord = 0; coord < generator->getMaxCoord(); coord++)
+    for(int coord = 0; coord < generator->GetMaxCoord(); coord++)
     {
         for(int move = 0; move < MOVE_COUNT; move++)
         {
             CubieCube cube;
-            generator->invertCoord(coord, cube);
-            cube.move(static_cast<Move>(move));
+            generator->InvertCoord(coord, cube);
+            cube.Move(static_cast<Move>(move));
             
-            int gen_coord = generator->getCoord(cube);
+            int gen_coord = generator->GetCoord(cube);
             int table_coord = table.get(coord, move);
 
             ASSERT_EQ(gen_coord, table_coord);

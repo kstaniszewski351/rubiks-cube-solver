@@ -2,16 +2,16 @@
 
 #include <numeric>
 
-int CornerTwistGenerator::getCoord(const CubieCube& cube) const {
-  return baseNEncode(3, cube.cornerOri.begin() + 1, cube.cornerOri.end());
+int CornerTwistGenerator::GetCoord(const CubieCube& cube) const {
+  return BaseNEncode(3, cube.corner_ori.begin() + 1, cube.corner_ori.end());
 }
-void CornerTwistGenerator::invertCoord(int coord, CubieCube& cube) const {
-  baseNDecode(coord, 3, cube.cornerOri.begin() + 1, cube.cornerOri.end());
+void CornerTwistGenerator::InvertCoord(int coord, CubieCube& cube) const {
+  BaseNDecode(coord, 3, cube.corner_ori.begin() + 1, cube.corner_ori.end());
 
   const int sum =
-      std::accumulate(cube.cornerOri.begin() + 1, cube.cornerOri.end(), 0);
+      std::accumulate(cube.corner_ori.begin() + 1, cube.corner_ori.end(), 0);
 
   const int first = (3 - (sum % 3)) % 3;
-  cube.cornerOri[0] = first;
+  cube.corner_ori[0] = first;
 }
-int CornerTwistGenerator::getMaxCoord() const { return n_coords_; }
+int CornerTwistGenerator::GetMaxCoord() const { return n_coords_; }

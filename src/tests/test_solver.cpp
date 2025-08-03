@@ -8,12 +8,12 @@
 
 bool isPhase1Solved(const CubieCube& cube)
 {
-    for(bool flip : cube.edgeFlip)
+    for(bool flip : cube.edge_flip)
     {
         if(flip != 0) {return false; }
     }
 
-    for(int twist : cube.cornerOri)
+    for(int twist : cube.corner_ori)
     {
         if(twist != 0) {return false; }
     }
@@ -65,7 +65,7 @@ int main()
 
     if(answer == "y")
     {
-        scramble = randomScramble(30, std::random_device()());
+        scramble = RandomScramble(30, std::random_device()());
         std::cout << "Scramble: ";
         for(Move move : scramble)
         {
@@ -102,14 +102,14 @@ int main()
     CubieCube cube;
     for(Move m : scramble)
     {
-        cube.move(m);
+        cube.Move(m);
     }
     std::cout << "Scrambled cube: \n";
     std::cout << cube;
 
     auto solve_begin_time = std::chrono::steady_clock::now();
 
-    auto solution = solver.solve(cube);
+    auto solution = solver.Solve(cube);
 
     auto solve_end_time = std::chrono::steady_clock::now();
     std::chrono::duration<float, std::milli> solve_duration = solve_end_time - solve_begin_time;
@@ -117,7 +117,7 @@ int main()
 
     for(Move m : solution)
     {
-        cube.move(m);
+        cube.Move(m);
     }
 
     std::cout << cube << "\n";

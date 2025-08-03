@@ -44,22 +44,22 @@ Element CubeBase::OnRender()
             auto tile_pos = Pos(i % 3 + face_pos[f].x * 3, i / 3 + face_pos[f].y * 3);
             
             Face c;
-            if(i == CENTER)
+            if(i == center_facelet)
             {
                 c = static_cast<Face>(f);
             }
-            else if( i > CENTER)
+            else if( i > center_facelet)
             {
-                c = face_cube_.facelets[f * FACELET_COUNT + i - 1];
+                c = face_cube_.facelets[f * facelet_count + i - 1];
             }
             else
             {
-                c = face_cube_.facelets[f * FACELET_COUNT + i];
+                c = face_cube_.facelets[f * facelet_count + i];
             }
 
             if(tile_pos == cursor_pos_ && to_set_ != FaceCount)
             {
-                face_cube_.facelets[f * FACELET_COUNT + c] = to_set_;
+                face_cube_.facelets[f * facelet_count + c] = to_set_;
                 c = to_set_;
                 to_set_ = FaceCount;
             }

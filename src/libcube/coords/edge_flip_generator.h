@@ -5,10 +5,10 @@
 
 class EdgeFlipGenerator : public CoordGenerator {
  public:
-  int getCoord(const CubieCube& cube) const override;
-  void invertCoord(int coord, CubieCube& cube) const override;
-  int getMaxCoord() const override;
+  int GetCoord(const CubieCube& cube) const override;
+  void InvertCoord(int coord, CubieCube& cube) const override;
+  int GetMaxCoord() const override;
 
  private:
-  constexpr static int n_coords_ = power(2, (EdgeCount - 1));
+  constexpr static int n_coords_ = Power(2, (EdgeCount - 1));
 };

@@ -15,8 +15,8 @@ int main()
         i = static_cast<Edge>(temp);
     }
 
-    int c = combinationEncode(perm, [](int i) {return i >= UD_SLICE;});
-    auto decode = combinationDecode<12>(c, 4);
+    int c = CombinationEncode(perm, [](int i) {return i >= UD_SLICE;});
+    auto decode = CombinationDecode<12>(c, 4);
     
     for(bool i : decode)
     {
