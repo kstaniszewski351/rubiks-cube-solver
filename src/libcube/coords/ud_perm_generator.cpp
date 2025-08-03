@@ -8,7 +8,7 @@ int UDPermGenerator::GetCoord(const CubieCube& cube) const {
 }
 
 void UDPermGenerator::InvertCoord(int coord, CubieCube& cube) const {
-  return LehmerDecode<Edge>(coord, ud_slice_start,
+  return LehmerDecode<Edge>(coord, cube.edge_perm.begin(),
                             cube.edge_perm.begin() + ud_slice_start);
 }
 

@@ -1,14 +1,15 @@
 #include "ud_slice_pos_generator.h"
+#include "cube.h"
 
 constexpr int ud_slice_start = 8;
 
 int UDSlicePosGenerator::GetCoord(const CubieCube& cube) const {
-  return CombinationEncode(cube.edge_perm,
-                           [](Edge e) { return e >= ud_slice_start; });
+  return CombinationEncode([](Edge e) { return e >= ud_slice_start; },
+                           cube.edge_perm.begin(), cube.edge_perm.end());
 }
 
 void UDSlicePosGenerator::InvertCoord(int coord, CubieCube& cube) const {
-  auto combination = CombinationDecode<12>(coord, 4);
+  std::array<bool, EdgeCount> combination = CombinationDecode<12>(coord, 4);
   std::array<Edge, EdgeCount> edge_perm;
 
   int index = 0;

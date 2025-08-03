@@ -1,9 +1,6 @@
 #pragma once
 #include <array>
 
-// encodes values of elements in an array of lenght N
-// as a coordinate ranging from 0 to base^(N-1)
-// doesnt encode position of element at index 0
 template <typename Iterator>
 int BaseNEncode(int base, Iterator begin, Iterator end) {
   int coord = 0;
@@ -40,9 +37,6 @@ constexpr T Factorial(T value) {
   return result;
 }
 
-// encodes permutation of N unique elements
-// with values ranging from 0 to N - 1
-// as a coordinate that ranges from 0 to N! - 1
 template <typename Iterator>
 int LehmerEncode(Iterator begin, Iterator end) {
   int coord = 0;
@@ -73,17 +67,16 @@ int LehmerEncode(Iterator begin, Iterator end) {
   return coord;
 }
 
-// decodes coordinate ranging from 0 to N! - 1
-// as a permutation of N unique elements with values
-// ranging from 0 to N - 1
-// works with integral types and enums
 template <typename T, typename Iterator>
-void LehmerDecode(int coord, int lenght, Iterator end) {
+void LehmerDecode(int coord, Iterator begin, Iterator end) {
   Iterator it = end - 1;
-  for (int max_digit = 1; max_digit <= lenght; max_digit++) {
+  int max_digit = 1;
+
+  while (it >= begin) {
     // decode factoradic
     int digit = coord % max_digit;
     coord /= max_digit;
+
     *it = static_cast<T>(digit);
     Iterator j = it + 1;
 
@@ -94,6 +87,7 @@ void LehmerDecode(int coord, int lenght, Iterator end) {
       j++;
     }
 
+    max_digit++;
     it--;
   }
 }
@@ -110,24 +104,25 @@ constexpr T BiCoeff(T n, T k) {
   return result;
 }
 
-// encodes combination of elements which meet toEncode predicate
-// as a coordinate ranging from 0 to bicoeff(N, k) - 1, k = number of elements
-// which meet toEncode
-// doesnt preserve order
-template <typename T, std::size_t N, typename F>
-int CombinationEncode(const std::array<T, N>& array, F&& predicate) {
-  int result = 0;
+template <typename F, typename Iterator>
+int CombinationEncode(F&& predicate, Iterator begin, Iterator end) {
+  int coord = 0;
+  int n_occupied = -1;
+  int index = 0;
+  Iterator it = begin;
 
-  int occupied = -1;
-  for (int i = 0; i < N; i++) {
-    if (predicate(array[i])) {
-      occupied++;
-    } else if (occupied >= 0) {
-      result += BiCoeff(i, occupied);
+  while (it < end) {
+    if (predicate(*it)) {
+      n_occupied++;
+    } else if (n_occupied >= 0) {
+      coord += BiCoeff(index, n_occupied);
     }
+
+    it++;
+    index++;
   }
 
-  return result;
+  return coord;
 }
 
 template <std::size_t N>
